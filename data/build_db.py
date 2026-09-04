@@ -18,6 +18,10 @@ CONSTITUENTS_URL = (
 FINANCIALS_URL = (
     "https://raw.githubusercontent.com/datasets/s-and-p-500-companies/main/data/constituents-financials.csv"
 )
+FINANCIALS_FALLBACK_URL = (
+    "https://raw.githubusercontent.com/datasets/s-and-p-500-companies-financials/main/data/"
+    "constituents-financials.csv"
+)
 MANUFACTURING_KEYWORDS = (
     "Machinery",
     "Industrial Conglomerates",
@@ -50,6 +54,17 @@ def join_and_filter(constituents: pd.DataFrame, financials: pd.DataFrame) -> pd.
     return joined.loc[joined["sector"].notna()].copy()
 
 
+def read_financials(source: str | Path = FINANCIALS_URL) -> pd.DataFrame:
+    """Read financials from the requested source, with the published repo as fallback."""
+    try:
+        return pd.read_csv(source)
+    except Exception as exc:
+        if str(source) != FINANCIALS_URL:
+            raise
+        print(f"Primary financials URL unavailable ({exc}); using published companion dataset.")
+        return pd.read_csv(FINANCIALS_FALLBACK_URL)
+
+
 async def seed_database(
     database_url: str,
     constituents: str | Path = CONSTITUENTS_URL,
@@ -57,7 +72,7 @@ async def seed_database(
     signals_path: str | Path = "data/signals_curated.json",
 ) -> None:
     constituents_frame = pd.read_csv(constituents)
-    financials_frame = pd.read_csv(financials)
+    financials_frame = read_financials(financials)
     joined = join_and_filter(constituents_frame, financials_frame)
     signals = json.loads(Path(signals_path).read_text(encoding="utf-8"))
     schema = Path(__file__).resolve().parents[1] / "src" / "db" / "schema.sql"

@@ -22,3 +22,8 @@ uv run pytest
 ```
 
 See `SPEC.md` for the data-quality caveats and system contracts.
+
+The downloaded raw snapshots are kept in `data/raw/`; the 110 rows surviving
+the three-sector filter and Symbol join are in `data/prepared/`. The financials
+URL specified by the assignment currently returns 404, so the loader and
+prepared snapshot use the published companion mirror documented in `SPEC.md`.

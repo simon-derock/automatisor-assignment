@@ -36,6 +36,12 @@ manual download, authentication, or Kaggle credentials are required:
 - Constituents/classification: `https://raw.githubusercontent.com/datasets/s-and-p-500-companies/main/data/constituents.csv`
 - Financials: `https://raw.githubusercontent.com/datasets/s-and-p-500-companies/main/data/constituents-financials.csv`
 
+The financials path above is the requested source-of-truth URL. At the time of
+this implementation it returns HTTP 404 from GitHub; the loader therefore
+falls back to the published mirror at
+`https://raw.githubusercontent.com/datasets/s-and-p-500-companies-financials/main/data/constituents-financials.csv`,
+which contains the specified 503-row financials snapshot and matching columns.
+
 The two frames are inner-joined on `Symbol`. The loader assigns exactly three
 application sectors: `tech` when `GICS Sector` equals `Information Technology`,
 `retail` when `GICS Sub-Industry` contains `Retail`, and `manufacturing` when
