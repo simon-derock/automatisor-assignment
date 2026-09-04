@@ -21,6 +21,8 @@
   added 22 curated signals, and implemented the idempotent asyncpg loader.
 - Phase 1: added `data/README.md` provenance manifest with source URLs, counts,
   and the financials fallback explanation.
+- Phase 1: loader now reads `.env`; regression tests verify 110 prepared rows,
+  all three sectors, 22 signals, and valid signal symbols.
 
 ### 🔄 Currently doing
 - Phase 2: expand MCP failure-path coverage and add the agent core.
