@@ -56,6 +56,22 @@ async def test_get_company_detail_returns_none_when_company_is_missing(
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("tool", [get_company_detail, get_recent_signals])
+async def test_identifier_tools_reject_blank_input_without_querying_database(
+    tool: object,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    async def unexpected_fetch_all(_query: str, _args: tuple[object, ...]) -> list[dict[str, str]]:
+        pytest.fail("blank identifiers must be rejected before database access")
+
+    monkeypatch.setattr("src.mcp_server.server.fetch_all", unexpected_fetch_all)
+
+    result = await tool("  \t")  # type: ignore[operator]
+
+    assert result == {"error": "Company identifier cannot be empty"}
+
+
+@pytest.mark.asyncio
 async def test_get_recent_signals_returns_empty_list_without_signals(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
