@@ -19,13 +19,15 @@
   domain tools are green.
 - Phase 1: downloaded 503-row raw snapshots, prepared 110 filtered/joined rows,
   added 22 curated signals, and implemented the idempotent asyncpg loader.
+- Phase 1: added `data/README.md` provenance manifest with source URLs, counts,
+  and the financials fallback explanation.
 
 ### 🔄 Currently doing
 - Phase 2: expand MCP failure-path coverage and add the agent core.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
-  has not been run. No git remote is configured, so pushes are currently unavailable.
+  has not been run. A push was attempted, but no git remote is configured.
 
 ### ⚠️ Open decisions / blockers
 - The provided `.git` directory is empty, so git commits cannot currently be created
