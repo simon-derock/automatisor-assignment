@@ -1,6 +1,6 @@
 import pytest
 
-from src.agent.providers import generate_with_fallback, generate_validated_response
+from src.agent.providers import generate_validated_response, generate_with_fallback
 from src.agent.schemas import AgentResponse
 
 
