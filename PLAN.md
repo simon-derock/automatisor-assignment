@@ -155,7 +155,7 @@ Rationale for minimal files: reviewers are grading system design, not file count
    - `test(agent): contract test on hardcoded persona`
 
 ### Phase 4 — Persona + sector switching
-1. `personas.py`: unified prompt template + persona block + tool-priority hint (see SPEC.md §4)
+1. [x] `personas.py`: unified prompt template + persona block + tool-priority hint (see SPEC.md §4)
 2. Parametrize agent entrypoint: `run_agent(query, persona, sector)`
 3. Define `confidence` computation rule explicitly (see SPEC.md §5)
 4. Commits:

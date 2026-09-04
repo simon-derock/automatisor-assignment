@@ -9,7 +9,7 @@
 ## STATUS
 
 **Last updated:** 2026-09-04
-**Current phase:** Phase 3 — Agent core (in progress)
+**Current phase:** Phase 4 — Persona + sector switching (in progress)
 
 ### ✅ Completed
 - Phase 0: project metadata, dependency configuration, environment template,
@@ -30,9 +30,11 @@
   isolated tables and teardown; local suite remains green without credentials.
 - Git: promoted `main` as the primary branch, merged the remote initial commit,
   and pushed the agent response schema; remote HEAD now points to `main`.
+- Phase 3/4: added and pushed persona prompt configuration with distinct
+  reasoning hints for all three analyst personas; 12 tests pass.
 
 ### 🔄 Currently doing
-- Phase 3: response schema contract is green; implement the MCP-backed agent loop next.
+- Implement `run_agent(query, persona, sector)` over the MCP tools with structured output.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
