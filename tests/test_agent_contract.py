@@ -1,4 +1,5 @@
 from src.agent.graph import (
+    _tool_data,
     confidence_from_context,
     create_mcp_transport,
     delimited_tool_context,
@@ -28,6 +29,31 @@ def test_tool_context_is_delimited_and_confidence_is_explicit() -> None:
     assert confidence_from_context(has_financials=True, has_signals=True) == "high"
     assert confidence_from_context(has_financials=True, has_signals=False) == "medium"
     assert confidence_from_context(has_financials=False, has_signals=False) == "low"
+
+
+def test_tool_data_unwraps_fastmcp_root_models() -> None:
+    class RootResult:
+        data = type(
+            "RootModel",
+            (),
+            {
+                "root": [
+                    type("ItemRoot", (), {"root": {"symbol": "ACME"}})(),
+                ]
+            },
+        )()
+
+    assert _tool_data(RootResult()) == [{"symbol": "ACME"}]
+
+
+def test_tool_data_prefers_fastmcp_json_content() -> None:
+    class Content:
+        text = '[{"symbol": "ACME"}]'
+
+    class ContentResult:
+        content = [Content()]
+
+    assert _tool_data(ContentResult()) == [{"symbol": "ACME"}]
 
 
 def test_company_query_without_search_match_is_flagged_as_no_data() -> None:

@@ -65,12 +65,28 @@ def should_flag_no_data(query: str, matches: list[Any]) -> bool:
 
 
 def _tool_data(result: Any) -> Any:
-    data = getattr(result, "data", None)
-    if data is not None:
-        return data
+    def unwrap(value: Any) -> Any:
+        root = getattr(value, "root", None)
+        if root is not None:
+            return unwrap(root)
+        if isinstance(value, list):
+            return [unwrap(item) for item in value]
+        if isinstance(value, dict):
+            return {key: unwrap(item) for key, item in value.items()}
+        return value
+
     content = getattr(result, "content", [])
     if content and getattr(content[0], "text", None):
-        return json.loads(content[0].text)
+        try:
+            return json.loads(content[0].text)
+        except json.JSONDecodeError:
+            logger.warning("MCP tool returned non-JSON text content")
+
+    data = getattr(result, "data", None)
+    if data is not None:
+        # FastMCP represents list/dict tool schemas as Pydantic RootModel
+        # instances when using structured results over stdio.
+        return unwrap(data)
     return None
 
 

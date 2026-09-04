@@ -8,8 +8,11 @@ import os
 from collections.abc import Awaitable, Callable
 from typing import TypeVar
 
+from dotenv import load_dotenv
 from pydantic import BaseModel, ValidationError
 from tenacity import AsyncRetrying, retry_if_exception_type, stop_after_attempt, wait_exponential
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 ProviderCall = Callable[[], Awaitable[str]]
@@ -80,7 +83,7 @@ def _generate_gemini(api_key: str, prompt: str) -> str:
 
     client = genai.Client(api_key=api_key)
     response = client.models.generate_content(
-        model=os.getenv("GEMINI_MODEL", "gemini-2.0-flash"),
+        model=os.getenv("GEMINI_MODEL", "gemini-3.6-flash"),
         contents=prompt,
     )
     if not response.text:
