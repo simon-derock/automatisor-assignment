@@ -23,6 +23,7 @@
   and the financials fallback explanation.
 - Phase 1: loader now reads `.env`; regression tests verify 110 prepared rows,
   all three sectors, 22 signals, and valid signal symbols.
+- Phase 1: corrected a curated Microsoft signal URL and revalidated all tests.
 
 ### 🔄 Currently doing
 - Phase 2: expand MCP failure-path coverage and add the agent core.
