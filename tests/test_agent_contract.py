@@ -71,6 +71,7 @@ def test_company_query_without_search_match_is_flagged_as_no_data() -> None:
         )
         is False
     )
+    assert should_flag_no_data("Which company here should I take private?", []) is False
     assert should_flag_no_data("What does Contoso hiring look like?", [{"symbol": "CTSO"}]) is True
 
 

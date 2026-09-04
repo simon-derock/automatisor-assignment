@@ -8,7 +8,11 @@ import os
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
+from dotenv import load_dotenv
+
 from src.agent.schemas import AgentResponse
+
+load_dotenv()
 
 
 @dataclass(frozen=True)
