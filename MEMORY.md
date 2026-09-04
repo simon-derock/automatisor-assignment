@@ -9,18 +9,22 @@
 ## STATUS
 
 **Last updated:** 2026-09-04
-**Current phase:** Phase 1 — Data layer (not yet started)
+**Current phase:** Phase 1 — Data layer (in progress)
 
 ### ✅ Completed
 - Phase 0: project metadata, dependency configuration, environment template,
   ignore rules, MIT license, CI skeleton, and pre-commit configuration added.
 - Phase 0: uv lockfile generated and bootstrap quality checks are green.
+- Phase 1: PostgreSQL schema added; MCP contract tests and all four initial
+  domain tools are green.
 
 ### 🔄 Currently doing
-- Phase 1: write the first red MCP contract test, then add the database schema.
+- Phase 1: add the reproducible CSV loader and curated signal seed, then create
+  isolated database fixtures for the remaining contract coverage.
 
 ### 🎯 Immediate next goal
-- Add `src/db/schema.sql` and the isolated test fixture before implementing data loading.
+- Add `data/build_db.py` and `data/signals_curated.json`; keep all DB access behind
+  the MCP tool layer.
 
 ### ⚠️ Open decisions / blockers
 - The provided `.git` directory is empty, so git commits cannot currently be created
