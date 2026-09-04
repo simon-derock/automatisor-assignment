@@ -1,6 +1,7 @@
 import pytest
 
-from src.agent.providers import generate_with_fallback
+from src.agent.providers import generate_with_fallback, generate_validated_response
+from src.agent.schemas import AgentResponse
 
 
 @pytest.mark.asyncio
@@ -30,3 +31,20 @@ async def test_fallback_provider_runs_after_primary_exhausts_retries() -> None:
         return "fallback result"
 
     assert await generate_with_fallback(primary, fallback) == "fallback result"
+
+
+@pytest.mark.asyncio
+async def test_structured_output_gets_one_validation_correction_retry() -> None:
+    prompts: list[str] = []
+    responses = ["{}", '{"answer":"ok","companies_referenced":[],"confidence":"low",'
+                 '"persona":"equity_analyst","sector":"tech"}']
+
+    async def generate(prompt: str) -> str:
+        prompts.append(prompt)
+        return responses.pop(0)
+
+    result = await generate_validated_response(generate, "Answer with JSON.", AgentResponse)
+
+    assert result.answer == "ok"
+    assert len(prompts) == 2
+    assert "validation" in prompts[1].lower()
