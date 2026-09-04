@@ -182,7 +182,7 @@ Rationale for minimal files: reviewers are grading system design, not file count
    - `test(api): structured JSON contract test`
 
 ### Phase 7 — Streamlit UI
-1. Persona/sector dropdowns, chat box, calls `run_agent()` directly (same function as API)
+1. [x] Persona/sector dropdowns, chat box, calls `run_agent()` directly (same function as API)
 2. Commits:
    - `feat(ui): streamlit app with persona/sector selectors`
    - `feat(ui): chat display of AgentResponse`

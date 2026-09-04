@@ -40,9 +40,11 @@
   simulated malformed JSON recovery passes and the suite has 16 tests.
 - Phase 6: added and pushed FastAPI health/query endpoints with locked request
   validation, shared-agent delegation, and CORS; full suite has 19 tests.
+- Phase 7: added and pushed Streamlit persona/sector chat UI calling the same
+  `run_agent()` entrypoint; full suite and strict checks remain green.
 
 ### 🔄 Currently doing
-- Wire the provider adapter into the agent loop, then add Streamlit UI coverage.
+- Wire the provider adapter into the agent loop, then add demo-script coverage and polish.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
