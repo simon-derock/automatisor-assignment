@@ -48,9 +48,11 @@
   grounded loop with deterministic fallback when keys are absent.
 - Phase 3: wrapped the grounded execution in a compiled LangGraph workflow and
   pushed it to `main`; full suite remains green at 19 tests.
+- Phase 8: completed README setup, architecture, caveat, improvement, and live
+  walkthrough documentation; pushed as `999d846`.
 
 ### 🔄 Currently doing
-- Finish README polish and end-to-end credentialed verification.
+- End-to-end credentialed verification remains pending `DATABASE_URL` and LLM keys.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
