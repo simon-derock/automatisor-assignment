@@ -7,6 +7,7 @@ import asyncio
 import json
 import os
 import re
+from datetime import date
 from pathlib import Path
 
 import asyncpg
@@ -43,6 +44,13 @@ def parse_number(value: object) -> float | None:
 def parse_founded(value: object) -> int | None:
     match = re.search(r"\b(\d{4})\b", str(value))
     return int(match.group(1)) if match else None
+
+
+def parse_signal_date(value: object) -> date | None:
+    """Convert curated ISO dates to the native value expected by asyncpg."""
+    if value is None or pd.isna(value) or not str(value).strip():
+        return None
+    return date.fromisoformat(str(value).strip())
 
 
 def join_and_filter(constituents: pd.DataFrame, financials: pd.DataFrame) -> pd.DataFrame:
@@ -128,7 +136,7 @@ async def seed_database(
                     VALUES($1, $2, $3, $4, $5)
                     """,
                     signal["symbol"], signal["signal_type"], signal["signal_text"],
-                    signal.get("source_url"), signal.get("signal_date"),
+                    signal.get("source_url"), parse_signal_date(signal.get("signal_date")),
                 )
     finally:
         await connection.close()

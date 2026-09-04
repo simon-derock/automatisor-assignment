@@ -1,8 +1,9 @@
 import json
+from datetime import date
 
 import pandas as pd
 
-from data.build_db import join_and_filter, parse_founded, parse_number
+from data.build_db import join_and_filter, parse_founded, parse_number, parse_signal_date
 
 
 def test_join_and_filter_keeps_only_the_three_specified_sector_rules() -> None:
@@ -50,6 +51,8 @@ def test_parsers_handle_snapshot_values_and_missing_values() -> None:
     assert parse_number("-") is None
     assert parse_founded("2013 (1888)") == 2013
     assert parse_founded(float("nan")) is None
+    assert parse_signal_date("2024-06-10") == date(2024, 6, 10)
+    assert parse_signal_date(None) is None
 
 
 def test_prepared_snapshot_and_curated_signals_match_contract() -> None:
