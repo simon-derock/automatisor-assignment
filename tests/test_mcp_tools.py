@@ -32,6 +32,18 @@ async def test_get_companies_by_sector_rejects_unknown_sector() -> None:
 
 
 @pytest.mark.asyncio
+async def test_get_companies_by_sector_returns_error_object_on_database_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    async def failed_fetch_all(_query: str, _args: tuple[object, ...]) -> list[dict[str, str]]:
+        raise OSError("database unavailable")
+
+    monkeypatch.setattr("src.mcp_server.server.fetch_all", failed_fetch_all)
+
+    assert await get_companies_by_sector("tech") == {"error": "database unavailable"}
+
+
+@pytest.mark.asyncio
 async def test_get_company_detail_returns_none_when_company_is_missing(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

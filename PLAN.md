@@ -118,14 +118,14 @@ Rationale for minimal files: reviewers are grading system design, not file count
 ## 6. SDLC Phases (each phase = its own worktree, micro-commits within)
 
 ### Phase 0 — Bootstrap
-- `uv init`, `pyproject.toml` (Python version pinned), `.env.example`, `.gitignore`, `LICENSE` (MIT), CI skeleton, pre-commit config
+- [x] `uv init`, `pyproject.toml` (Python version pinned), `.env.example`, `.gitignore`, `LICENSE` (MIT), CI skeleton, pre-commit config
 - Commit: `chore: bootstrap uv project, CI skeleton, env template, license`
 
 ### Phase 1 — Data layer (TDD)
-1. Write `tests/test_mcp_tools.py` stubs asserting shape of `get_companies_by_sector("tech")` **before** implementing (red)
-2. `data/build_db.py`: pull the two GitHub CSVs (constituents + constituents-financials), filter to 3 sectors via GICS sub-industry keywords, load into Supabase via `asyncpg`
-3. Add `data/signals_curated.json` — 20-30 hand-sourced hiring/news signal rows
-4. `tests/conftest.py`: dedicated test-schema fixture, separate from demo tables
+1. [x] Write `tests/test_mcp_tools.py` stubs asserting shape of `get_companies_by_sector("tech")` **before** implementing (red)
+2. [x] `data/build_db.py`: pull the two GitHub CSVs (constituents + constituents-financials), filter to 3 sectors via GICS sub-industry keywords, load into Supabase via `asyncpg`
+3. [x] Add `data/signals_curated.json` — 20-30 hand-sourced hiring/news signal rows
+4. [ ] `tests/conftest.py`: dedicated test-schema fixture, separate from demo tables
 5. Commit sequence (micro):
    - `feat(db): schema.sql for companies/financials/signals tables`
    - `feat(data): build_db.py fetches and filters S&P500 CSVs by sector`
@@ -133,9 +133,9 @@ Rationale for minimal files: reviewers are grading system design, not file count
    - `test(db): isolated test-schema fixture`
 
 ### Phase 2 — MCP server (TDD)
-1. Red: contract tests for each tool's return shape, including empty/not-found and **error** cases
-2. Implement `src/mcp_server/server.py` tool by tool (stdio transport) until green
-3. Define consistent error shape (`{"error": "..."}`) for connection/timeout failures, distinct from "not found"
+1. [x] Red: contract tests for each tool's return shape, including empty/not-found and **error** cases
+2. [x] Implement `src/mcp_server/server.py` tool by tool (stdio transport) until green
+3. [x] Define consistent error shape (`{"error": "..."}`) for connection/timeout failures, distinct from "not found"
 4. Commits:
    - `feat(mcp): get_companies_by_sector tool`
    - `feat(mcp): get_company_detail tool with not-found handling`
