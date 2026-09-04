@@ -126,7 +126,7 @@ def _specific_company_match(
 
     named = [match for match in candidates if is_named_in_query(match)]
     if len(named) == 1:
-        return named[0]
+        return dict(named[0])
 
     ranked = sorted(
         candidates,
@@ -136,7 +136,7 @@ def _specific_company_match(
     top_score = float(ranked[0].get("match_confidence", 0))
     next_score = float(ranked[1].get("match_confidence", 0)) if len(ranked) > 1 else 0
     if top_score >= 85 and top_score - next_score >= 10:
-        return ranked[0]
+        return dict(ranked[0])
     return None
 
 
