@@ -307,7 +307,7 @@ shortest end-to-end check is:
    confirm it reaches the same `run_agent` path as the API.
 
 The MCP boundary can be checked independently with the stdio handshake and the
-four tool names documented above. This verifies that database context crosses
+five tool names documented above. This verifies that database context crosses
 MCP rather than being obtained by a direct database import in the UI or API.
 
 Local quality gates:
@@ -327,7 +327,7 @@ Live verification in the author’s environment confirmed:
 
 - Supabase counts of 110 / 110 / 22 and sector counts of 64 tech, 22 retail,
   and 24 manufacturing;
-- MCP stdio handshake and all four tools;
+- MCP stdio handshake and all five tools;
 - API health and structured responses;
 - Streamlit bootstrap and a PE/Tech chat submission;
 - all nine LangGraph/MCP/Supabase persona-sector paths;
