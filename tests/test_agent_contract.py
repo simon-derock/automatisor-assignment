@@ -1,4 +1,10 @@
+import json
+
+import pytest
+
 from src.agent.graph import (
+    _run_grounded_agent,
+    _specific_company_match,
     _tool_data,
     confidence_from_context,
     create_mcp_transport,
@@ -67,3 +73,81 @@ def test_agent_transport_is_stdio_subprocess() -> None:
 
     assert transport.command.endswith("python")
     assert transport.args == ["-m", "src.mcp_server.server"]
+
+
+def test_specific_company_match_prefers_named_high_confidence_result() -> None:
+    matches = [
+        {"symbol": "AAPL", "name": "Apple Inc.", "match_confidence": 72.0},
+        {"symbol": "AMAT", "name": "Applied Materials", "match_confidence": 68.0},
+    ]
+
+    assert (
+        _specific_company_match("What is the latest hiring signal for Apple?", matches)
+        == matches[0]
+    )
+
+
+@pytest.mark.asyncio
+async def test_named_company_routes_detail_and_signals_without_sector_screen(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[str, dict[str, str]]] = []
+
+    class Result:
+        def __init__(self, value: object) -> None:
+            self.content = [type("Content", (), {"text": json.dumps(value)})()]
+
+    class FakeClient:
+        def __init__(self, _transport: object) -> None:
+            pass
+
+        async def __aenter__(self) -> "FakeClient":
+            return self
+
+        async def __aexit__(self, *_args: object) -> None:
+            return None
+
+        async def call_tool(self, name: str, arguments: dict[str, str]) -> Result:
+            calls.append((name, arguments))
+            values: dict[str, object] = {
+                "search_company": [
+                    {"symbol": "AAPL", "name": "Apple Inc.", "match_confidence": 72.0},
+                    {"symbol": "AMAT", "name": "Applied Materials", "match_confidence": 68.0},
+                ],
+                "get_company_detail": {
+                    "symbol": "AAPL",
+                    "name": "Apple Inc.",
+                    "sector": "tech",
+                    "price": 100.0,
+                },
+                "get_recent_signals": [
+                    {"symbol": "AAPL", "signal_text": "Hiring expanded."}
+                ],
+            }
+            return Result(values[name])
+
+    async def fake_generate(*_args: object, **_kwargs: object) -> AgentResponse:
+        return AgentResponse(
+            answer="Apple has a recent hiring signal.",
+            companies_referenced=["AAPL"],
+            confidence="high",
+            persona="equity_analyst",
+            sector="tech",
+        )
+
+    monkeypatch.setattr("src.agent.graph.Client", FakeClient)
+    monkeypatch.setattr("src.agent.graph.generate_validated_response", fake_generate)
+
+    await _run_grounded_agent(
+        "What is the most recent hiring or headcount signal for Apple?",
+        "equity_analyst",
+        "tech",
+    )
+
+    assert [name for name, _ in calls] == [
+        "search_company",
+        "get_company_detail",
+        "get_recent_signals",
+    ]
+    assert calls[1][1] == {"symbol_or_name": "AAPL"}
+    assert calls[2][1] == {"symbol_or_name": "AAPL"}

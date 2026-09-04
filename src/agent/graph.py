@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import sys
 from collections.abc import Mapping
 from pathlib import Path
@@ -90,6 +91,55 @@ def _tool_data(result: Any) -> Any:
     return None
 
 
+def _specific_company_match(
+    query: str, matches: list[Any]
+) -> dict[str, Any] | None:
+    """Choose a single unambiguous company returned by ``search_company``.
+
+    A company explicitly named in the question is preferred. Otherwise, only a
+    high-confidence result with a clear lead over the next result is accepted;
+    this keeps broad sector questions on the sector-screen path.
+    """
+    candidates = [
+        match
+        for match in matches
+        if isinstance(match, Mapping)
+        and match.get("symbol")
+        and match.get("name")
+    ]
+    if not candidates:
+        return None
+
+    query_words = set(re.findall(r"[a-z0-9]+", query.casefold()))
+
+    def is_named_in_query(match: Mapping[str, Any]) -> bool:
+        symbol = str(match["symbol"]).casefold()
+        if symbol in query_words:
+            return True
+        ignored = {"inc", "corp", "corporation", "company", "co", "ltd", "plc"}
+        name_words = [
+            word
+            for word in re.findall(r"[a-z0-9]+", str(match["name"]).casefold())
+            if word not in ignored
+        ]
+        return any(word in query_words for word in name_words if len(word) >= 3)
+
+    named = [match for match in candidates if is_named_in_query(match)]
+    if len(named) == 1:
+        return named[0]
+
+    ranked = sorted(
+        candidates,
+        key=lambda match: float(match.get("match_confidence", 0)),
+        reverse=True,
+    )
+    top_score = float(ranked[0].get("match_confidence", 0))
+    next_score = float(ranked[1].get("match_confidence", 0)) if len(ranked) > 1 else 0
+    if top_score >= 85 and top_score - next_score >= 10:
+        return ranked[0]
+    return None
+
+
 async def _run_grounded_agent(query: str, persona: str, sector: str) -> AgentResponse:
     """Run a grounded query through the co-located MCP server.
 
@@ -113,19 +163,27 @@ async def _run_grounded_agent(query: str, persona: str, sector: str) -> AgentRes
                 sector=sector,
                 no_data_flag=True,
             )
-        sector_result = _tool_data(
-            await client.call_tool("get_companies_by_sector", {"sector": sector})
+        specific_match = (
+            _specific_company_match(query, search_result)
+            if isinstance(search_result, list)
+            else None
         )
-        if isinstance(sector_result, dict) and "error" in sector_result:
-            return AgentResponse(
-                answer="I’m having trouble reaching the financial data source right now.",
-                companies_referenced=[],
-                confidence="low",
-                persona=persona,
-                sector=sector,
+        if specific_match is not None:
+            selected = [specific_match]
+        else:
+            sector_result = _tool_data(
+                await client.call_tool("get_companies_by_sector", {"sector": sector})
             )
-        companies = sector_result if isinstance(sector_result, list) else []
-        selected = companies[:3]
+            if isinstance(sector_result, dict) and "error" in sector_result:
+                return AgentResponse(
+                    answer="I’m having trouble reaching the financial data source right now.",
+                    companies_referenced=[],
+                    confidence="low",
+                    persona=persona,
+                    sector=sector,
+                )
+            companies = sector_result if isinstance(sector_result, list) else []
+            selected = companies[:3]
         details: list[dict[str, Any]] = []
         signals_by_symbol: dict[str, list[Any]] = {}
         for company in selected:
