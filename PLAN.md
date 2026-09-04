@@ -174,8 +174,8 @@ Rationale for minimal files: reviewers are grading system design, not file count
    - `test(agent): out-of-scope company returns explicit no-data response`
 
 ### Phase 6 — API
-1. Red: `test_api_contract.py` — POST `/query` returns `answer`, `companies_referenced`, `confidence`, `persona`, `sector`
-2. Implement FastAPI wrapper calling `run_agent()` directly (no reimplementation), add CORS middleware + `GET /health`
+1. [x] Red: `test_api_contract.py` — POST `/query` returns `answer`, `companies_referenced`, `confidence`, `persona`, `sector`
+2. [x] Implement FastAPI wrapper calling `run_agent()` directly (no reimplementation), add CORS middleware + `GET /health`
 3. Commits:
    - `feat(api): POST /query endpoint wrapping shared agent`
    - `feat(api): CORS config + health check endpoint`

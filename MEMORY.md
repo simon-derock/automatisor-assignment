@@ -38,9 +38,11 @@
   adapter; simulated rate-limit tests pass and the suite has 15 tests.
 - Phase 3: added and pushed one-shot Pydantic structured-output correction;
   simulated malformed JSON recovery passes and the suite has 16 tests.
+- Phase 6: added and pushed FastAPI health/query endpoints with locked request
+  validation, shared-agent delegation, and CORS; full suite has 19 tests.
 
 ### 🔄 Currently doing
-- Wire the provider adapter into the agent loop, then add API contract coverage.
+- Wire the provider adapter into the agent loop, then add Streamlit UI coverage.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
