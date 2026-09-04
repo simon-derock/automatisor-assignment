@@ -1,19 +1,25 @@
-from fastapi.testclient import TestClient
+import httpx
+import pytest
 
 from src.agent.schemas import AgentResponse
 from src.api.main import app
 
 
-def test_health_endpoint_returns_ok() -> None:
-    client = TestClient(app)
+@pytest.mark.asyncio
+async def test_health_endpoint_returns_ok() -> None:
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/health")
 
-    response = client.get("/health")
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
 
-def test_query_endpoint_returns_structured_agent_response(monkeypatch) -> None:
+@pytest.mark.asyncio
+async def test_query_endpoint_returns_structured_agent_response(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     async def fake_run_agent(query: str, persona: str, sector: str) -> AgentResponse:
         return AgentResponse(
             answer=f"Grounded answer for {query}",
@@ -24,22 +30,25 @@ def test_query_endpoint_returns_structured_agent_response(monkeypatch) -> None:
         )
 
     monkeypatch.setattr("src.api.main.run_agent", fake_run_agent)
-    client = TestClient(app)
-
-    response = client.post(
-        "/query",
-        json={"query": "Compare ACME", "persona": "equity_analyst", "sector": "tech"},
-    )
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.post(
+            "/query",
+            json={"query": "Compare ACME", "persona": "equity_analyst", "sector": "tech"},
+        )
 
     assert response.status_code == 200
     assert response.json()["companies_referenced"] == ["ACME"]
     assert response.json()["confidence"] == "medium"
 
 
-def test_query_endpoint_rejects_invalid_persona() -> None:
-    response = TestClient(app).post(
-        "/query",
-        json={"query": "Compare", "persona": "day_trader", "sector": "tech"},
-    )
+@pytest.mark.asyncio
+async def test_query_endpoint_rejects_invalid_persona() -> None:
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.post(
+            "/query",
+            json={"query": "Compare", "persona": "day_trader", "sector": "tech"},
+        )
 
     assert response.status_code == 422
