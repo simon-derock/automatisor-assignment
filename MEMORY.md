@@ -54,15 +54,17 @@
   pushed it to `main`; the local suite has 21 tests.
 - Phase 8: completed README setup, architecture, caveat, improvement, and live
   walkthrough documentation; pushed as `999d846`.
+- Live verification: Supabase is seeded with 110 companies, 110 financials,
+  and 22 signals; a live MCP lookup and Gemini structured response were
+  verified through commit `82afec7`.
 
 ### 🔄 Currently doing
-- End-to-end credentialed verification remains pending `DATABASE_URL` and LLM keys.
-- Documentation was audited against `SPEC.md` and the current implementation;
-  manual nine-combination checks and the credentialed database demo remain open.
+- Manual nine-combination checks and the remaining credentialed demo scenarios
+  are still open; the database, MCP lookup, and Gemini response path are live.
 
 ### 🎯 Immediate next goal
-- `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
-  has not been run.
+- Run the documented demo scenarios end-to-end and record the results, including
+  cross-persona divergence and the company-specific hiring-signal lookup.
 
 ### ⚠️ Open decisions / blockers
 - The provided `.git` directory is a read-only mount; commits are kept in the

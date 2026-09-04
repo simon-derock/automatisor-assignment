@@ -8,8 +8,9 @@ contracts in [SPEC.md](SPEC.md) and the phased build plan in [PLAN.md](PLAN.md).
 
 Core implementation is available on `main`: the prepared dataset, MCP tools,
 persona prompts, LangGraph workflow, FastAPI endpoint, Streamlit UI, and demo
-runner are included. Credentialed end-to-end execution requires a Postgres
-connection string; LLM API keys enable provider-generated responses, while a
+runner are included. Supabase is seeded with 110 companies, 110 financials, and
+22 signals; live MCP lookup and a Gemini structured response have been
+verified. LLM API keys enable provider-generated responses, while a
 deterministic grounded fallback is used when no key is configured.
 
 ## Development

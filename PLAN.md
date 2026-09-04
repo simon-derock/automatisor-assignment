@@ -190,7 +190,7 @@ Rationale for minimal files: reviewers are grading system design, not file count
 ### Phase 8 — Demo script + polish + submission
 - [x] `scripts/demo_queries.py`: runnable script that fires all 4 grading-test categories + a spread across the 9 combos, printing results — this is what stands in for the video
 - [x] README: setup instructions, schema decisions, MCP design rationale, "what I'd improve," data-quality caveats, note offering a **live walkthrough in place of a video**
-- Final CI green run
+- [x] Final local CI checks: Ruff, mypy, and pytest pass through `82afec7`
 - Commits:
    - `feat(scripts): demo_queries.py covering all grading-test cases`
    - `docs: README with schema/MCP write-up and setup instructions`
@@ -209,5 +209,7 @@ Rationale for minimal files: reviewers are grading system design, not file count
 - [ ] `scripts/demo_queries.py` runs clean end-to-end, covering all 4 grading-test categories
 - [x] README contains: setup steps, schema decisions, MCP design rationale, data-quality caveats, "what I'd improve with more time," live-walkthrough offer
 - [x] `.env.example`, `.gitignore`, `LICENSE` present, no real keys committed
-- [ ] CI green (lint + type-check + tests) on final commit
+- [ ] Remote CI green (lint + type-check + tests) on the final submission commit
+- [x] Credentialed smoke checks: Supabase seeded (110/110/22), live MCP lookup,
+  and Gemini structured response verified through `82afec7`
 - [x] Retry/fallback logic verified to survive at least one simulated rate-limit
