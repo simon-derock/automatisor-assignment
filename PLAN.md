@@ -157,8 +157,8 @@ Rationale for minimal files: reviewers are grading system design, not file count
 
 ### Phase 4 — Persona + sector switching
 1. [x] `personas.py`: unified prompt template + persona block + tool-priority hint (see SPEC.md §4)
-2. Parametrize agent entrypoint: `run_agent(query, persona, sector)`
-3. Define `confidence` computation rule explicitly (see SPEC.md §5)
+2. [x] Parametrize agent entrypoint: `run_agent(query, persona, sector)`
+3. [x] Define `confidence` computation rule explicitly (see SPEC.md §5)
 4. Commits:
    - `feat(agent): persona prompt blocks (mf_analyst, equity_analyst, pe_analyst)`
    - `feat(agent): sector param threading through tool calls`
@@ -203,11 +203,11 @@ Rationale for minimal files: reviewers are grading system design, not file count
 - [ ] 9 persona×sector combos runnable and manually spot-checked (at least 4-5 combos incl. the doc's example queries)
 - [ ] Cross-persona same-question test shows genuinely different reasoning (tool-priority + framing), not just tone
 - [ ] Hiring/headcount stress-test query forces real `get_recent_signals` DB call
-- [ ] Out-of-scope company query returns explicit "no data" — verified by test
-- [ ] API POST /query returns structured JSON per SPEC.md contract
-- [ ] Streamlit UI and API both call the same `run_agent()` — no duplicate logic
+- [x] Out-of-scope company query returns explicit "no data" — verified by test
+- [x] API POST /query returns structured JSON per SPEC.md contract
+- [x] Streamlit UI and API both call the same `run_agent()` — no duplicate logic
 - [ ] `scripts/demo_queries.py` runs clean end-to-end, covering all 4 grading-test categories
-- [ ] README contains: setup steps, schema decisions, MCP design rationale, data-quality caveats, "what I'd improve with more time," live-walkthrough offer
-- [ ] `.env.example`, `.gitignore`, `LICENSE` present, no real keys committed
+- [x] README contains: setup steps, schema decisions, MCP design rationale, data-quality caveats, "what I'd improve with more time," live-walkthrough offer
+- [x] `.env.example`, `.gitignore`, `LICENSE` present, no real keys committed
 - [ ] CI green (lint + type-check + tests) on final commit
-- [ ] Retry/fallback logic verified to survive at least one simulated rate-limit
+- [x] Retry/fallback logic verified to survive at least one simulated rate-limit

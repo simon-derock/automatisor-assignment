@@ -9,7 +9,7 @@
 ## STATUS
 
 **Last updated:** 2026-09-04
-**Current phase:** Phase 3 — Agent core (in progress)
+**Current phase:** Phase 8 — Demo script + polish + submission (in progress)
 
 ### ✅ Completed
 - Phase 0: project metadata, dependency configuration, environment template,
@@ -51,12 +51,14 @@
 - Phase 3: wired Gemini-primary/Mistral-fallback provider generation into the
   grounded loop with deterministic fallback when keys are absent.
 - Phase 3: wrapped the grounded execution in a compiled LangGraph workflow and
-  pushed it to `main`; full suite remains green at 19 tests.
+  pushed it to `main`; the local suite has 21 tests.
 - Phase 8: completed README setup, architecture, caveat, improvement, and live
   walkthrough documentation; pushed as `999d846`.
 
 ### 🔄 Currently doing
-- End-to-end credentialed verification remains pending `DATABASE_URL` and LLM keys; all local gates are green.
+- End-to-end credentialed verification remains pending `DATABASE_URL` and LLM keys.
+- Documentation was audited against `SPEC.md` and the current implementation;
+  manual nine-combination checks and the credentialed database demo remain open.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
@@ -72,8 +74,9 @@
 
 - Sectors locked: `tech`, `retail`, `manufacturing` (see SPEC.md §1 for GICS mapping)
 - Personas locked: `mf_analyst`, `equity_analyst`, `pe_analyst` (see SPEC.md §2)
-- Data source: raw CSVs from `github.com/datasets/s-and-p-500-companies` (constituents.csv +
-  constituents-financials.csv), no Kaggle auth needed
+- Data source: constituents from `github.com/datasets/s-and-p-500-companies` plus
+  its published financials companion mirror because the requested financials path
+  currently returns 404; no Kaggle auth needed
 - Signals table is hand-curated (~20-30 rows), lives in `data/signals_curated.json`
 - MCP tools are domain-specific wrappers over asyncpg, NOT raw SQL passthrough — this is a
   hard requirement from the assignment, do not regress to a generic query tool

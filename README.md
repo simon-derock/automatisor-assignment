@@ -9,7 +9,8 @@ contracts in [SPEC.md](SPEC.md) and the phased build plan in [PLAN.md](PLAN.md).
 Core implementation is available on `main`: the prepared dataset, MCP tools,
 persona prompts, LangGraph workflow, FastAPI endpoint, Streamlit UI, and demo
 runner are included. Credentialed end-to-end execution requires a Postgres
-connection string and at least one LLM API key.
+connection string; LLM API keys enable provider-generated responses, while a
+deterministic grounded fallback is used when no key is configured.
 
 ## Development
 
@@ -28,7 +29,8 @@ See `SPEC.md` for the data-quality caveats and system contracts.
 The downloaded raw snapshots are kept in `data/raw/`; the 110 rows surviving
 the three-sector filter and Symbol join are in `data/prepared/`. The financials
 URL specified by the assignment currently returns 404, so the loader and
-prepared snapshot use the published companion mirror documented in `SPEC.md`.
+prepared snapshot use the published companion mirror documented in
+`data/README.md`.
 
 ## Run the services
 
