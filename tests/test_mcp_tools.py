@@ -6,6 +6,7 @@ from src.mcp_server.server import (
     get_companies_by_sector,
     get_company_detail,
     get_recent_signals,
+    screen_companies,
     search_company,
 )
 
@@ -95,3 +96,41 @@ async def test_search_company_returns_match_confidence(
     assert await search_company("Acme") == [
         {"symbol": "ACME", "name": "Acme Corp", "match_confidence": 100.0}
     ]
+
+
+@pytest.mark.asyncio
+async def test_screen_companies_ranks_requested_sector_and_metric(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured: dict[str, object] = {}
+
+    async def fake_fetch_all(query: str, args: tuple[object, ...]) -> list[dict[str, object]]:
+        captured["query"] = query
+        captured["args"] = args
+        return [{"rank": 1, "symbol": "ACME", "market_cap": 1000}]
+
+    monkeypatch.setattr("src.mcp_server.server.fetch_all", fake_fetch_all)
+
+    result = await screen_companies("tech", metric="market_cap", limit=3)
+
+    assert result == [{"rank": 1, "symbol": "ACME", "market_cap": 1000}]
+    assert captured["args"] == ("tech", 3)
+    assert "ORDER BY f.market_cap DESC NULLS LAST" in str(captured["query"])
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("kwargs", "message"),
+    [
+        ({"sector": "utilities"}, "Invalid sector: utilities"),
+        ({"sector": "tech", "metric": "price"}, "Invalid screening metric"),
+        ({"sector": "tech", "limit": 0}, "Screening limit must be an integer"),
+    ],
+)
+async def test_screen_companies_rejects_invalid_screen_parameters(
+    kwargs: dict[str, object], message: str
+) -> None:
+    result = await screen_companies(**kwargs)  # type: ignore[arg-type]
+
+    assert isinstance(result, dict)
+    assert str(result["error"]).startswith(message)
