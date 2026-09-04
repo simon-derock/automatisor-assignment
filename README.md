@@ -18,12 +18,22 @@ FastAPI API, Streamlit UI, tests, and a runnable demo matrix.
 | Sectors | `tech`, `retail`, `manufacturing` |
 | Database | Supabase-hosted PostgreSQL via `asyncpg` |
 | Integration boundary | MCP over a co-located `stdio` subprocess |
+| MCP tools | Five live Supabase-backed tools: search, sector list, screening, detail, signals |
 | Orchestration | Compiled LangGraph workflow |
 | Primary LLM | Gemini (`gemini-3.6-flash` by default) |
 | Fallback | Mistral, then deterministic grounded response |
 | Human interface | Streamlit |
 | Programmatic interface | FastAPI `GET /health`, `POST /query` |
 | Response contract | Pydantic `AgentResponse` |
+
+### MCP boundary at a glance
+
+The agent never imports a database client for retrieval. LangGraph uses a
+FastMCP client over `stdio` to call five tools in the MCP server:
+`search_company`, `get_companies_by_sector`, `screen_companies`,
+`get_company_detail`, and `get_recent_signals`. The MCP server is the protocol
+boundary and reads live sector context from Supabase PostgreSQL; tool results
+are then passed to the shared persona-specific ReAct prompt as delimited data.
 
 ## What is implemented
 
