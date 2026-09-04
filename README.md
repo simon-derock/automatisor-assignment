@@ -35,7 +35,7 @@ FastAPI API, Streamlit UI, tests, and a runnable demo matrix.
     competitive positioning.
   - **PE Analyst:** EBITDA, deal-size proxy, leverage capacity, operational
     levers, and exit-multiple potential.
-- Live database retrieval through four domain-specific MCP tools.
+- Live database retrieval through five domain-specific MCP tools.
 - Search-first named-company handling, sector validation, and honest out-of-
   scope responses.
 - Structured responses with referenced companies, confidence, persona, sector,
@@ -139,6 +139,7 @@ through `asyncpg`; the API and UI never bypass MCP.
 | --- | --- |
 | `search_company(query)` | Fuzzy search with match-confidence scores |
 | `get_companies_by_sector(sector)` | Sector-level company list |
+| `screen_companies(sector, metric, limit)` | Ranked peer screen by an allowlisted financial metric |
 | `get_company_detail(symbol_or_name)` | Company identity joined to financials |
 | `get_recent_signals(symbol_or_name)` | Newest curated signals for one company |
 

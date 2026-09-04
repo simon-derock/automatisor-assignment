@@ -20,6 +20,11 @@ from src.agent.schemas import AgentResponse
 
 logger = logging.getLogger(__name__)
 Confidence = Literal["high", "medium", "low"]
+SCREENING_METRICS = {
+    "mf_analyst": "market_cap",
+    "equity_analyst": "ebitda",
+    "pe_analyst": "ebitda",
+}
 
 
 class AgentState(TypedDict, total=False):
@@ -187,19 +192,33 @@ async def _run_grounded_agent(query: str, persona: str, sector: str) -> AgentRes
         if specific_match is not None:
             selected = [specific_match]
         else:
-            sector_result = _tool_data(
-                await client.call_tool("get_companies_by_sector", {"sector": sector})
-            )
-            if isinstance(sector_result, dict) and "error" in sector_result:
-                return AgentResponse(
-                    answer="I’m having trouble reaching the financial data source right now.",
-                    companies_referenced=[],
-                    confidence="low",
-                    persona=persona,
-                    sector=sector,
+            screened_result = _tool_data(
+                await client.call_tool(
+                    "screen_companies",
+                    {
+                        "sector": sector,
+                        "metric": SCREENING_METRICS[persona],
+                        "limit": 3,
+                        "descending": True,
+                    },
                 )
-            companies = sector_result if isinstance(sector_result, list) else []
-            selected = companies[:3]
+            )
+            if isinstance(screened_result, list):
+                selected = screened_result
+            else:
+                sector_result = _tool_data(
+                    await client.call_tool("get_companies_by_sector", {"sector": sector})
+                )
+                if isinstance(sector_result, dict) and "error" in sector_result:
+                    return AgentResponse(
+                        answer="I’m having trouble reaching the financial data source right now.",
+                        companies_referenced=[],
+                        confidence="low",
+                        persona=persona,
+                        sector=sector,
+                    )
+                companies = sector_result if isinstance(sector_result, list) else []
+                selected = companies[:3]
         details: list[dict[str, Any]] = []
         signals_by_symbol: dict[str, list[Any]] = {}
         for company in selected:
