@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import os
 from collections.abc import Awaitable, Callable
@@ -17,6 +18,46 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 ProviderCall = Callable[[], Awaitable[str]]
 ModelT = TypeVar("ModelT", bound=BaseModel)
+
+_OUTPUT_CONTROL = """\
+You are the answer-generation stage of a grounded ReAct workflow.
+Reason privately in this order: inspect the user's request, inspect only the supplied
+database/tool evidence, check whether the evidence supports the claims, then compose
+the answer through the requested persona and sector lens. Do not invent facts, sources,
+companies, metrics, or tool results. If the evidence is insufficient, say so and set
+no_data_flag appropriately.
+
+Output protocol (highest priority): return exactly one JSON object and nothing else.
+Do not emit Markdown fences, headings, commentary, a thought trace, or a preamble.
+Use the requested response schema exactly; include every required field, use an array
+for companies_referenced, and use only the allowed confidence value. Keep the answer
+concise but explain the evidence-based reasoning and relevant caveats.
+"""
+
+
+def _controlled_prompt(prompt: str) -> str:
+    return f"{_OUTPUT_CONTROL}\n\nGrounding context and task:\n{prompt}"
+
+
+def _json_candidate(raw: str) -> str:
+    """Accept strict JSON plus common provider wrappers, while rejecting ambiguity."""
+    text = raw.strip()
+    if text.startswith("```"):
+        lines = text.splitlines()
+        if len(lines) >= 3 and lines[-1].strip() == "```":
+            text = "\n".join(lines[1:-1]).strip()
+    try:
+        json.loads(text)
+        return text
+    except json.JSONDecodeError:
+        decoder = json.JSONDecoder()
+        start = text.find("{")
+        if start < 0:
+            raise
+        _, end = decoder.raw_decode(text[start:])
+        candidate = text[start : start + end]
+        json.loads(candidate)
+        return candidate
 
 
 async def _retry_provider(provider: ProviderCall) -> str:
@@ -46,16 +87,20 @@ async def generate_validated_response(
     response_model: type[ModelT],
 ) -> ModelT:
     """Parse provider JSON and retry once with Pydantic feedback on failure."""
-    raw = await generate(prompt)
+    controlled_prompt = _controlled_prompt(prompt)
+    raw = await generate(controlled_prompt)
     try:
-        return response_model.model_validate_json(raw)
-    except ValidationError as first_error:
+        return response_model.model_validate_json(_json_candidate(raw))
+    except (ValidationError, json.JSONDecodeError) as first_error:
         correction_prompt = (
-            f"{prompt}\n\nYour previous response failed validation. "
-            f"Return only valid JSON matching the schema. Validation error:\n{first_error}"
+            f"{controlled_prompt}\n\n"
+            "REPAIR REQUIRED. Your previous response was not an acceptable instance "
+            "of the requested JSON schema. Return only one valid JSON object; do not "
+            f"use Markdown or prose. Schema: {response_model.model_json_schema()}\n"
+            f"Validation error: {first_error}"
         )
         corrected = await generate(correction_prompt)
-        return response_model.model_validate_json(corrected)
+        return response_model.model_validate_json(_json_candidate(corrected))
 
 
 async def generate_from_environment(prompt: str) -> str:
@@ -84,7 +129,7 @@ def _generate_gemini(api_key: str, prompt: str) -> str:
     client = genai.Client(api_key=api_key)
     response = client.models.generate_content(
         model=os.getenv("GEMINI_MODEL", "gemini-3.6-flash"),
-        contents=prompt,
+        contents=_controlled_prompt(prompt),
         config={
             "response_mime_type": "application/json",
             "response_schema": {
@@ -118,7 +163,8 @@ def _generate_mistral(api_key: str, prompt: str) -> str:
     client = Mistral(api_key=api_key)
     response = client.chat.complete(
         model=os.getenv("MISTRAL_MODEL", "mistral-small-latest"),
-        messages=[{"role": "user", "content": prompt}],  # type: ignore[arg-type]
+        messages=[{"role": "user", "content": _controlled_prompt(prompt)}],  # type: ignore[arg-type]
+        response_format={"type": "json_object"},
     )
     content = response.choices[0].message.content
     if not isinstance(content, str) or not content:

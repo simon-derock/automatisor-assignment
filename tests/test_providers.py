@@ -1,6 +1,11 @@
 import pytest
 
-from src.agent.providers import generate_validated_response, generate_with_fallback
+from src.agent.providers import (
+    _OUTPUT_CONTROL,
+    _json_candidate,
+    generate_validated_response,
+    generate_with_fallback,
+)
 from src.agent.schemas import AgentResponse
 
 
@@ -60,3 +65,18 @@ async def test_structured_output_gets_one_validation_correction_retry() -> None:
     assert result.answer == "ok"
     assert len(prompts) == 2
     assert "validation" in prompts[1].lower()
+    assert "ReAct" in prompts[0]
+    assert "JSON object" in prompts[0]
+
+
+def test_json_candidate_handles_fence_and_leading_provider_prose() -> None:
+    payload = '{"answer":"ok"}'
+
+    assert _json_candidate(f"Here is the result:\n{payload}\nDone") == payload
+    assert _json_candidate(f"```json\n{payload}\n```") == payload
+
+
+def test_output_control_requires_private_grounded_reasoning_and_json_only() -> None:
+    assert "database/tool evidence" in _OUTPUT_CONTROL
+    assert "Do not emit" in _OUTPUT_CONTROL
+    assert "Do not invent facts" in _OUTPUT_CONTROL
