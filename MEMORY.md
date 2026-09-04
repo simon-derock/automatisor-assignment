@@ -36,9 +36,11 @@
   delimited tool context and explicit confidence calculation; 13 tests pass.
 - Phase 3: added and pushed tenacity-backed primary retry and fallback provider
   adapter; simulated rate-limit tests pass and the suite has 15 tests.
+- Phase 3: added and pushed one-shot Pydantic structured-output correction;
+  simulated malformed JSON recovery passes and the suite has 16 tests.
 
 ### 🔄 Currently doing
-- Add structured-output correction and then wire the provider adapter into the agent loop.
+- Wire the provider adapter into the agent loop, then add API contract coverage.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
