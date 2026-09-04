@@ -9,7 +9,7 @@
 ## STATUS
 
 **Last updated:** 2026-09-04
-**Current phase:** Phase 4 — Persona + sector switching (in progress)
+**Current phase:** Phase 3 — Agent core (in progress)
 
 ### ✅ Completed
 - Phase 0: project metadata, dependency configuration, environment template,
@@ -32,9 +32,11 @@
   and pushed the agent response schema; remote HEAD now points to `main`.
 - Phase 3/4: added and pushed persona prompt configuration with distinct
   reasoning hints for all three analyst personas; 12 tests pass.
+- Phase 3: added and pushed an MCP-protocol-backed grounded query loop with
+  delimited tool context and explicit confidence calculation; 13 tests pass.
 
 ### 🔄 Currently doing
-- Implement `run_agent(query, persona, sector)` over the MCP tools with structured output.
+- Add LangGraph/provider adapters, retry/fallback handling, and structured-output correction.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
