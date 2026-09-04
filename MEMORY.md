@@ -9,7 +9,7 @@
 ## STATUS
 
 **Last updated:** 2026-09-04
-**Current phase:** Phase 2 — MCP server (complete; agent core next)
+**Current phase:** Phase 3 — Agent core (in progress)
 
 ### ✅ Completed
 - Phase 0: project metadata, dependency configuration, environment template,
@@ -28,13 +28,15 @@
   contract coverage; full suite is green at 9 tests.
 - Phase 1: added an optional disposable `TEST_DATABASE_URL` schema fixture with
   isolated tables and teardown; local suite remains green without credentials.
+- Git: promoted `main` as the primary branch, merged the remote initial commit,
+  and pushed the agent response schema; remote HEAD now points to `main`.
 
 ### 🔄 Currently doing
-- Phase 3: begin the agent core with the response schema contract test.
+- Phase 3: response schema contract is green; implement the MCP-backed agent loop next.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
-  has not been run. A push was attempted, but no git remote is configured.
+  has not been run.
 
 ### ⚠️ Open decisions / blockers
 - The provided `.git` directory is a read-only mount; commits are kept in the
