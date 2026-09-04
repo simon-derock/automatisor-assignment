@@ -8,8 +8,11 @@ from collections.abc import Sequence
 from typing import Any
 
 import asyncpg
+from dotenv import load_dotenv
 from fastmcp import FastMCP
 from rapidfuzz import fuzz, process
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 mcp = FastMCP("financial-data")
