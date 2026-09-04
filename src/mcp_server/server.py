@@ -9,6 +9,7 @@ from typing import Any
 
 import asyncpg
 from fastmcp import FastMCP
+from rapidfuzz import fuzz, process
 
 logger = logging.getLogger(__name__)
 mcp = FastMCP("financial-data")
@@ -57,9 +58,87 @@ async def get_companies_by_sector(
         return {"error": str(exc)}
 
 
+async def get_company_detail(
+    symbol_or_name: str,
+) -> dict[str, Any] | None:
+    """Return a company and its financial snapshot, or None when not found."""
+    if not symbol_or_name.strip():
+        return {"error": "Company identifier cannot be empty"}
+    try:
+        rows = await fetch_all(
+            """
+            SELECT c.symbol, c.name, c.sector, c.sub_industry, c.headquarters, c.founded,
+                   f.price, f.pe_ratio, f.dividend_yield, f.eps, f.week52_low,
+                   f.week52_high, f.market_cap, f.ebitda, f.price_to_sales,
+                   f.price_to_book, f.source_url, f.as_of_note
+            FROM companies AS c
+            LEFT JOIN financials AS f ON f.symbol = c.symbol
+            WHERE c.symbol ILIKE $1 OR c.name ILIKE $1
+            ORDER BY c.symbol
+            LIMIT 1
+            """,
+            (symbol_or_name.strip(),),
+        )
+        return rows[0] if rows else None
+    except (asyncpg.PostgresError, OSError, RuntimeError) as exc:
+        logger.exception("get_company_detail failed")
+        return {"error": str(exc)}
+
+
+async def get_recent_signals(
+    symbol_or_name: str,
+) -> list[dict[str, Any]] | dict[str, str]:
+    """Return curated signals for a company, ordered newest first."""
+    if not symbol_or_name.strip():
+        return {"error": "Company identifier cannot be empty"}
+    try:
+        return await fetch_all(
+            """
+            SELECT s.id, s.symbol, s.signal_type, s.signal_text, s.source_url, s.signal_date
+            FROM signals AS s
+            JOIN companies AS c ON c.symbol = s.symbol
+            WHERE c.symbol ILIKE $1 OR c.name ILIKE $1
+            ORDER BY s.signal_date DESC NULLS LAST, s.id DESC
+            """,
+            (symbol_or_name.strip(),),
+        )
+    except (asyncpg.PostgresError, OSError, RuntimeError) as exc:
+        logger.exception("get_recent_signals failed")
+        return {"error": str(exc)}
+
+
+async def search_company(
+    query: str,
+) -> list[dict[str, Any]] | dict[str, str]:
+    """Fuzzy-match a company name or ticker against the dataset."""
+    if not query.strip():
+        return {"error": "Search query cannot be empty"}
+    try:
+        companies = await fetch_all("SELECT symbol, name FROM companies ORDER BY name", ())
+        choices = {str(company["symbol"]): str(company["name"]) for company in companies}
+        matches = process.extract(
+            query.strip(), choices, scorer=fuzz.WRatio, limit=5, score_cutoff=45
+        )
+        result: list[dict[str, Any]] = []
+        for name, score, symbol in matches:
+            normalized_query = query.strip().casefold()
+            normalized_name = str(name).casefold()
+            confidence = 100.0 if normalized_query in normalized_name else float(score)
+            result.append(
+                {"symbol": str(symbol), "name": str(name), "match_confidence": confidence}
+            )
+        return result
+    except (asyncpg.PostgresError, OSError, RuntimeError) as exc:
+        logger.exception("search_company failed")
+        return {"error": str(exc)}
+
+
 # Register the callable without replacing it with FastMCP's metadata wrapper;
 # this keeps the same function directly testable and reusable by the agent.
 mcp.tool(get_companies_by_sector)
+mcp.tool(get_company_detail)
+mcp.tool(get_recent_signals)
+mcp.tool(search_company)
 
 
 if __name__ == "__main__":
