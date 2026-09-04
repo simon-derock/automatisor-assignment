@@ -4,16 +4,18 @@ from __future__ import annotations
 
 import json
 import logging
+import sys
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any, Literal, TypedDict, cast
 
 from fastmcp import Client
+from fastmcp.client.transports import StdioTransport
 from langgraph.graph import END, START, StateGraph
 
 from src.agent.personas import build_system_prompt
 from src.agent.providers import generate_from_environment, generate_validated_response
 from src.agent.schemas import AgentResponse
-from src.mcp_server.server import mcp
 
 logger = logging.getLogger(__name__)
 Confidence = Literal["high", "medium", "low"]
@@ -24,6 +26,16 @@ class AgentState(TypedDict, total=False):
     persona: str
     sector: str
     response: AgentResponse
+
+
+def create_mcp_transport() -> StdioTransport:
+    """Create the co-located stdio transport required by the MCP contract."""
+    repository_root = Path(__file__).resolve().parents[2]
+    return StdioTransport(
+        command=sys.executable,
+        args=["-m", "src.mcp_server.server"],
+        cwd=str(repository_root),
+    )
 
 
 def delimited_tool_context(result: Mapping[str, Any] | list[Any]) -> str:
@@ -72,7 +84,7 @@ async def _run_grounded_agent(query: str, persona: str, sector: str) -> AgentRes
         raise ValueError("Query cannot be empty")
     build_system_prompt(persona, sector)
 
-    async with Client(mcp) as client:
+    async with Client(create_mcp_transport()) as client:
         search_result = _tool_data(
             await client.call_tool("search_company", {"query": query})
         )
