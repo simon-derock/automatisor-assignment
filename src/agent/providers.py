@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
+import os
 from collections.abc import Awaitable, Callable
 from typing import TypeVar
 
@@ -51,3 +53,50 @@ async def generate_validated_response(
         )
         corrected = await generate(correction_prompt)
         return response_model.model_validate_json(corrected)
+
+
+async def generate_from_environment(prompt: str) -> str:
+    """Generate JSON through Gemini first and Mistral second using environment keys."""
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    mistral_key = os.getenv("MISTRAL_API_KEY")
+    if not gemini_key and not mistral_key:
+        raise RuntimeError("No LLM provider API keys are configured")
+
+    async def gemini_call() -> str:
+        if not gemini_key:
+            raise RuntimeError("GEMINI_API_KEY is not configured")
+        return await asyncio.to_thread(_generate_gemini, gemini_key, prompt)
+
+    async def mistral_call() -> str:
+        if not mistral_key:
+            raise RuntimeError("MISTRAL_API_KEY is not configured")
+        return await asyncio.to_thread(_generate_mistral, mistral_key, prompt)
+
+    return await generate_with_fallback(gemini_call, mistral_call)
+
+
+def _generate_gemini(api_key: str, prompt: str) -> str:
+    from google import genai
+
+    client = genai.Client(api_key=api_key)
+    response = client.models.generate_content(
+        model=os.getenv("GEMINI_MODEL", "gemini-2.0-flash"),
+        contents=prompt,
+    )
+    if not response.text:
+        raise RuntimeError("Gemini returned an empty response")
+    return response.text
+
+
+def _generate_mistral(api_key: str, prompt: str) -> str:
+    from mistralai import Mistral
+
+    client = Mistral(api_key=api_key)
+    response = client.chat.complete(
+        model=os.getenv("MISTRAL_MODEL", "mistral-small-latest"),
+        messages=[{"role": "user", "content": prompt}],  # type: ignore[arg-type]
+    )
+    content = response.choices[0].message.content
+    if not isinstance(content, str) or not content:
+        raise RuntimeError("Mistral returned an empty response")
+    return content

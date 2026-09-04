@@ -10,6 +10,7 @@ from typing import Any, Literal
 from fastmcp import Client
 
 from src.agent.personas import build_system_prompt
+from src.agent.providers import generate_from_environment, generate_validated_response
 from src.agent.schemas import AgentResponse
 from src.mcp_server.server import mcp
 
@@ -45,9 +46,8 @@ def _tool_data(result: Any) -> Any:
 async def run_agent(query: str, persona: str, sector: str) -> AgentResponse:
     """Run a grounded query through the co-located MCP server.
 
-    The current phase intentionally uses a deterministic grounded response while
-    the provider adapter is added next. Every company named here is first
-    retrieved through MCP, so this path never invents database facts.
+    Every company named here is first retrieved through MCP. If provider keys
+    are configured, the provider receives only this retrieved context.
     """
     if not query.strip():
         raise ValueError("Query cannot be empty")
@@ -68,6 +68,7 @@ async def run_agent(query: str, persona: str, sector: str) -> AgentResponse:
         companies = sector_result if isinstance(sector_result, list) else []
         selected = companies[:3]
         details: list[dict[str, Any]] = []
+        signals_by_symbol: dict[str, list[Any]] = {}
         for company in selected:
             detail = _tool_data(
                 await client.call_tool(
@@ -76,6 +77,14 @@ async def run_agent(query: str, persona: str, sector: str) -> AgentResponse:
             )
             if isinstance(detail, dict) and "error" not in detail:
                 details.append(detail)
+                signals = _tool_data(
+                    await client.call_tool(
+                        "get_recent_signals", {"symbol_or_name": company["symbol"]}
+                    )
+                )
+                signals_by_symbol[str(detail["symbol"])] = (
+                    signals if isinstance(signals, list) else []
+                )
 
         if not details:
             return AgentResponse(
@@ -88,6 +97,34 @@ async def run_agent(query: str, persona: str, sector: str) -> AgentResponse:
             )
 
     names = ", ".join(str(detail["name"]) for detail in details)
+    context = "\n".join(
+        delimited_tool_context(
+            {"detail": detail, "signals": signals_by_symbol.get(str(detail["symbol"]), [])}
+        )
+        for detail in details
+    )
+    prompt = (
+        f"{build_system_prompt(persona, sector)}\nUser query: {query}\n"
+        f"Retrieved company context:\n{context}\n"
+        "Return only JSON matching AgentResponse. Use only retrieved facts."
+    )
+    try:
+        response = await generate_validated_response(
+            generate_from_environment, prompt, AgentResponse
+        )
+        retrieved_symbols = {str(detail["symbol"]) for detail in details}
+        response.companies_referenced = [
+            symbol for symbol in response.companies_referenced if symbol in retrieved_symbols
+        ]
+        response.persona = persona
+        response.sector = sector
+        response.confidence = confidence_from_context(
+            has_financials=True,
+            has_signals=all(signals_by_symbol.get(str(detail["symbol"])) for detail in details),
+        )
+        return response
+    except Exception:
+        logger.exception("Provider generation failed; returning grounded deterministic response")
     logger.info("Generated grounded sector response", extra={"persona": persona, "sector": sector})
     return AgentResponse(
         answer=(
@@ -97,7 +134,10 @@ async def run_agent(query: str, persona: str, sector: str) -> AgentResponse:
             "before drawing an investment conclusion."
         ),
         companies_referenced=[str(detail["symbol"]) for detail in details],
-        confidence=confidence_from_context(has_financials=True, has_signals=False),
+        confidence=confidence_from_context(
+            has_financials=True,
+            has_signals=all(signals_by_symbol.get(str(detail["symbol"])) for detail in details),
+        ),
         persona=persona,
         sector=sector,
     )
