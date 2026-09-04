@@ -206,7 +206,11 @@ async def _run_grounded_agent(query: str, persona: str, sector: str) -> AgentRes
                     "get_company_detail", {"symbol_or_name": company["symbol"]}
                 )
             )
-            if isinstance(detail, dict) and "error" not in detail:
+            if (
+                isinstance(detail, dict)
+                and "error" not in detail
+                and detail.get("sector") == sector
+            ):
                 details.append(detail)
                 signals = _tool_data(
                     await client.call_tool(

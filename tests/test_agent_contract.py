@@ -158,3 +158,12 @@ async def test_named_company_routes_detail_and_signals_without_sector_screen(
     ]
     assert calls[1][1] == {"symbol_or_name": "AAPL"}
     assert calls[2][1] == {"symbol_or_name": "AAPL"}
+
+
+def test_company_detail_must_match_selected_sector() -> None:
+    from src.agent.graph import _specific_company_match
+
+    assert _specific_company_match(
+        "What is Apple's hiring signal?",
+        [{"symbol": "AAPL", "name": "Apple Inc.", "match_confidence": 60.0}],
+    ) == {"symbol": "AAPL", "name": "Apple Inc.", "match_confidence": 60.0}
