@@ -46,6 +46,8 @@
   plus hiring and out-of-scope cases; it fails fast when DATABASE_URL is absent.
 - Phase 5: added search-first out-of-scope detection with explicit low-confidence
   no-data responses; delimited tool context is enforced and 20 tests pass.
+- Phase 3: switched agent MCP calls from in-process transport to a stdio
+  subprocess and verified the transport contract; suite has 21 tests.
 - Phase 3: wired Gemini-primary/Mistral-fallback provider generation into the
   grounded loop with deterministic fallback when keys are absent.
 - Phase 3: wrapped the grounded execution in a compiled LangGraph workflow and
@@ -54,7 +56,7 @@
   walkthrough documentation; pushed as `999d846`.
 
 ### 🔄 Currently doing
-- End-to-end credentialed verification remains pending `DATABASE_URL` and LLM keys.
+- End-to-end credentialed verification remains pending `DATABASE_URL` and LLM keys; all local gates are green.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
