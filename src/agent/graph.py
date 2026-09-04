@@ -61,6 +61,7 @@ def should_flag_no_data(query: str, matches: list[Any]) -> bool:
         sector_request = (
             "which companies" in normalized
             or "in this sector" in normalized
+            or "this sector" in normalized
             or "companies in your data" in normalized
             or "company here" in normalized
         )
@@ -71,6 +72,7 @@ def should_flag_no_data(query: str, matches: list[Any]) -> bool:
     sector_request = (
         "which companies" in normalized
         or "in this sector" in normalized
+        or "this sector" in normalized
         or "companies in your data" in normalized
         or "company here" in normalized
     )
