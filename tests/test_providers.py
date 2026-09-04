@@ -4,6 +4,18 @@ from src.agent.providers import generate_validated_response, generate_with_fallb
 from src.agent.schemas import AgentResponse
 
 
+def test_agent_response_schema_requires_all_structured_fields() -> None:
+    schema = AgentResponse.model_json_schema()
+
+    assert set(schema["required"]) >= {
+        "answer",
+        "companies_referenced",
+        "confidence",
+        "persona",
+        "sector",
+    }
+
+
 @pytest.mark.asyncio
 async def test_primary_provider_retries_before_succeeding() -> None:
     calls = 0

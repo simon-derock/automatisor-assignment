@@ -85,6 +85,27 @@ def _generate_gemini(api_key: str, prompt: str) -> str:
     response = client.models.generate_content(
         model=os.getenv("GEMINI_MODEL", "gemini-3.6-flash"),
         contents=prompt,
+        config={
+            "response_mime_type": "application/json",
+            "response_schema": {
+                "type": "OBJECT",
+                "properties": {
+                    "answer": {"type": "STRING"},
+                    "companies_referenced": {"type": "ARRAY", "items": {"type": "STRING"}},
+                    "confidence": {"type": "STRING", "enum": ["high", "medium", "low"]},
+                    "persona": {"type": "STRING"},
+                    "sector": {"type": "STRING"},
+                    "no_data_flag": {"type": "BOOLEAN"},
+                },
+                "required": [
+                    "answer",
+                    "companies_referenced",
+                    "confidence",
+                    "persona",
+                    "sector",
+                ],
+            },
+        },
     )
     if not response.text:
         raise RuntimeError("Gemini returned an empty response")

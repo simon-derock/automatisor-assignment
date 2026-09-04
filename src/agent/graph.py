@@ -175,8 +175,11 @@ async def _run_grounded_agent(query: str, persona: str, sector: str) -> AgentRes
         response.companies_referenced = [
             symbol for symbol in response.companies_referenced if symbol in retrieved_symbols
         ]
+        if not response.companies_referenced:
+            response.companies_referenced = [str(detail["symbol"]) for detail in details]
         response.persona = persona
         response.sector = sector
+        response.no_data_flag = False
         response.confidence = confidence_from_context(
             has_financials=True,
             has_signals=all(signals_by_symbol.get(str(detail["symbol"])) for detail in details),
