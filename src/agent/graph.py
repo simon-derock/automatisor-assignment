@@ -41,6 +41,17 @@ def confidence_from_context(*, has_financials: bool, has_signals: bool) -> Confi
     return "low"
 
 
+def should_flag_no_data(query: str, matches: list[Any]) -> bool:
+    """Distinguish an unmatched company request from a sector-level screen."""
+    if matches:
+        return False
+    normalized = query.casefold()
+    sector_request = "which companies" in normalized or "in this sector" in normalized
+    return not sector_request and any(
+        phrase in normalized for phrase in ("hiring", "headcount", "company", "contoso")
+    )
+
+
 def _tool_data(result: Any) -> Any:
     data = getattr(result, "data", None)
     if data is not None:
@@ -62,6 +73,18 @@ async def _run_grounded_agent(query: str, persona: str, sector: str) -> AgentRes
     build_system_prompt(persona, sector)
 
     async with Client(mcp) as client:
+        search_result = _tool_data(
+            await client.call_tool("search_company", {"query": query})
+        )
+        if isinstance(search_result, list) and should_flag_no_data(query, search_result):
+            return AgentResponse(
+                answer="I have no data on that company in the configured dataset.",
+                companies_referenced=[],
+                confidence="low",
+                persona=persona,
+                sector=sector,
+                no_data_flag=True,
+            )
         sector_result = _tool_data(
             await client.call_tool("get_companies_by_sector", {"sector": sector})
         )
