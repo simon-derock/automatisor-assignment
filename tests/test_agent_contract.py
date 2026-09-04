@@ -1,4 +1,9 @@
-from src.agent.graph import confidence_from_context, delimited_tool_context, should_flag_no_data
+from src.agent.graph import (
+    confidence_from_context,
+    create_mcp_transport,
+    delimited_tool_context,
+    should_flag_no_data,
+)
 from src.agent.schemas import AgentResponse
 
 
@@ -29,3 +34,10 @@ def test_company_query_without_search_match_is_flagged_as_no_data() -> None:
     assert should_flag_no_data("What does Contoso hiring look like?", []) is True
     assert should_flag_no_data("Which companies are in this sector?", []) is False
     assert should_flag_no_data("What does Contoso hiring look like?", [{"symbol": "CTSO"}]) is False
+
+
+def test_agent_transport_is_stdio_subprocess() -> None:
+    transport = create_mcp_transport()
+
+    assert transport.command.endswith("python")
+    assert transport.args == ["-m", "src.mcp_server.server"]
