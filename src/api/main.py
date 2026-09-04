@@ -32,7 +32,7 @@ async def run_agent(query: str, persona: str, sector: str) -> AgentResponse:
 
 
 @app.get("/health")
-def health() -> dict[str, str]:
+async def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
