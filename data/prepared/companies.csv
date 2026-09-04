@@ -1,0 +1,111 @@
+Symbol,Name,sector,GICS Sub-Industry,Headquarters Location,Founded
+MMM,3M,manufacturing,Industrial Conglomerates,"Saint Paul, Minnesota",1902
+ACN,Accenture,tech,IT Consulting & Other Services,"Dublin, Ireland",1989
+ADBE,Adobe Inc.,tech,Application Software,"San Jose, California",1982
+AMD,Advanced Micro Devices,tech,Semiconductors,"Santa Clara, California",1969
+AKAM,Akamai Technologies,tech,Internet Services & Infrastructure,"Cambridge, Massachusetts",1998
+AMZN,Amazon,retail,Broadline Retail,"Seattle, Washington",1994
+APH,Amphenol,tech,Electronic Components,"Wallingford, Connecticut",1932
+ADI,Analog Devices,tech,Semiconductors,"Wilmington, Massachusetts",1965
+AAPL,Apple Inc.,tech,"Technology Hardware, Storage & Peripherals","Cupertino, California",1977
+AMAT,Applied Materials,tech,Semiconductor Materials & Equipment,"Santa Clara, California",1967
+ANET,Arista Networks,tech,Communications Equipment,"Santa Clara, California",2004
+ADSK,Autodesk,tech,Application Software,"San Francisco, California",1982
+AZO,AutoZone,retail,Automotive Retail,"Memphis, Tennessee",1979
+BBY,Best Buy,retail,Computer & Electronics Retail,"Richfield, Minnesota",1966
+AVGO,Broadcom,tech,Semiconductors,"Palo Alto, California",1961
+CDNS,Cadence Design Systems,tech,Application Software,"San Jose, California",1988
+CAT,Caterpillar Inc.,manufacturing,Construction Machinery & Heavy Transportation Equipment,"Irving, Texas",1925
+CDW,CDW,tech,Technology Distributors,"Vernon Hills, Illinois",1984
+CSCO,Cisco,tech,Communications Equipment,"San Jose, California",1984
+CTSH,Cognizant,tech,IT Consulting & Other Services,"Teaneck, New Jersey",1994
+GLW,Corning Inc.,tech,Electronic Components,"Corning, New York",1851
+COST,Costco,retail,Consumer Staples Merchandise Retail,"Issaquah, Washington",1976
+CRWD,CrowdStrike,tech,Systems Software,"Austin, Texas",2011
+CMI,Cummins,manufacturing,Construction Machinery & Heavy Transportation Equipment,"Columbus, Indiana",1919
+DE,Deere & Company,manufacturing,Agricultural & Farm Machinery,"Moline, Illinois",1837
+DELL,Dell Technologies,tech,"Technology Hardware, Storage & Peripherals","Round Rock, Texas",2016
+DG,Dollar General,retail,Consumer Staples Merchandise Retail,"Goodlettsville, Tennessee",1939
+DLTR,Dollar Tree,retail,Consumer Staples Merchandise Retail,"Chesapeake, Virginia",1986
+DOV,Dover Corporation,manufacturing,Industrial Machinery & Supplies & Components,"Downers Grove, Illinois",1955
+DD,DuPont,manufacturing,Industrial Conglomerates,"Wilmington, Delaware",2017 (1802)
+EBAY,eBay,retail,Broadline Retail,"San Jose, California",1995
+FFIV,"F5, Inc.",tech,Communications Equipment,"Seattle, Washington",1996
+FICO,Fair Isaac,tech,Application Software,"Bozeman, Montana",1956
+FRT,Federal Realty Investment Trust,retail,Retail REITs,"Rockville, Maryland",1962
+FSLR,First Solar,tech,Semiconductors,"Tempe, Arizona",1999
+FTNT,Fortinet,tech,Systems Software,"Sunnyvale, California",2000
+FTV,Fortive,manufacturing,Industrial Machinery & Supplies & Components,"Everett, Washington",2016
+IT,Gartner,tech,IT Consulting & Other Services,"Stamford, Connecticut",1979
+GEV,GE Vernova,manufacturing,Heavy Electrical Equipment,"Cambridge, Massachusetts",2024
+GEN,Gen Digital,tech,Systems Software,"Tempe, Arizona",1982
+GNRC,Generac,manufacturing,Heavy Electrical Equipment,"Waukesha, Wisconsin",1959
+GDDY,GoDaddy,tech,Internet Services & Infrastructure,"Tempe, Arizona",1997
+HPE,Hewlett Packard Enterprise,tech,"Technology Hardware, Storage & Peripherals","Houston, Texas",2015
+HD,Home Depot (The),retail,Home Improvement Retail,"Atlanta, Georgia",1978
+HON,Honeywell,manufacturing,Industrial Conglomerates,"Charlotte, North Carolina",1906
+HPQ,HP Inc.,tech,"Technology Hardware, Storage & Peripherals","Palo Alto, California",1939 (2015)
+HUBB,Hubbell Incorporated,manufacturing,Industrial Machinery & Supplies & Components,"Shelton, Connecticut",1888
+IBM,IBM,tech,IT Consulting & Other Services,"Armonk, New York",1911
+IEX,IDEX Corporation,manufacturing,Industrial Machinery & Supplies & Components,"Northbrook, Illinois",1988
+ITW,Illinois Tool Works,manufacturing,Industrial Machinery & Supplies & Components,"Glenview, Illinois",1912
+IR,Ingersoll Rand,manufacturing,Industrial Machinery & Supplies & Components,"Davidson, North Carolina",1859
+INTC,Intel,tech,Semiconductors,"Santa Clara, California",1968
+INTU,Intuit,tech,Application Software,"Mountain View, California",1983
+JBL,Jabil,tech,Electronic Manufacturing Services,"St. Petersburg, Florida",1966
+KEYS,Keysight Technologies,tech,Electronic Equipment & Instruments,"Santa Rosa, California",2014 (1939)
+KIM,Kimco Realty,retail,Retail REITs,"Jericho, New York",1958
+KLAC,KLA Corporation,tech,Semiconductor Materials & Equipment,"Milpitas, California",1975/1977 (1997)
+KR,Kroger,retail,Food Retail,"Cincinnati, Ohio",1883
+LRCX,Lam Research,tech,Semiconductor Materials & Equipment,"Fremont, California",1980
+LOW,Lowe's,retail,Home Improvement Retail,"Mooresville, North Carolina",1904/1946/1959
+MCHP,Microchip Technology,tech,Semiconductors,"Chandler, Arizona",1989
+MU,Micron Technology,tech,Semiconductors,"Boise, Idaho",1978
+MSFT,Microsoft,tech,Systems Software,"Redmond, Washington",1975
+MPWR,Monolithic Power Systems,tech,Semiconductors,"Kirkland, Washington",1997
+MSI,Motorola Solutions,tech,Communications Equipment,"Chicago, Illinois",1928 (2011)
+NTAP,NetApp,tech,"Technology Hardware, Storage & Peripherals","San Jose, California",1992
+NDSN,Nordson Corporation,manufacturing,Industrial Machinery & Supplies & Components,"Westlake, Ohio",1935
+NVDA,Nvidia,tech,Semiconductors,"Santa Clara, California",1993
+NXPI,NXP Semiconductors,tech,Semiconductors,"Eindhoven, Netherlands",1953
+ORLY,O'Reilly Auto Parts,retail,Automotive Retail,"Springfield, Missouri",1957
+ON,ON Semiconductor,tech,Semiconductors,"Phoenix, Arizona",1999
+ORCL,Oracle Corporation,tech,Application Software,"Austin, Texas",1977
+OTIS,Otis Worldwide,manufacturing,Industrial Machinery & Supplies & Components,"Farmington, Connecticut","2020 (1853, United Technologies spinoff)"
+PCAR,Paccar,manufacturing,Construction Machinery & Heavy Transportation Equipment,"Bellevue, Washington",1905
+PLTR,Palantir Technologies,tech,Application Software,"Aventura, Florida",2003
+PANW,Palo Alto Networks,tech,Systems Software,"Santa Clara, California",2005
+PH,Parker Hannifin,manufacturing,Industrial Machinery & Supplies & Components,"Cleveland, Ohio",1917
+PNR,Pentair,manufacturing,Industrial Machinery & Supplies & Components,"Worsley, United Kingdom",1966
+PTC,PTC Inc.,tech,Application Software,"Boston, Massachusetts",1985
+QCOM,Qualcomm,tech,Semiconductors,"San Diego, California",1985
+O,Realty Income,retail,Retail REITs,"San Diego, California",1969
+REG,Regency Centers,retail,Retail REITs,"Jacksonville, Florida",1963
+ROP,Roper Technologies,tech,Electronic Equipment & Instruments,"Sarasota, Florida",1981
+ROST,Ross Stores,retail,Apparel Retail,"Dublin, California",1982
+CRM,Salesforce,tech,Application Software,"San Francisco, California",1999
+STX,Seagate Technology,tech,"Technology Hardware, Storage & Peripherals","Dublin, Ireland",1979
+NOW,ServiceNow,tech,Systems Software,"Santa Clara, California",2003
+SPG,Simon Property Group,retail,Retail REITs,"Indianapolis, Indiana",2003
+SWKS,Skyworks Solutions,tech,Semiconductors,"Irvine, California",2002
+SNA,Snap-on,manufacturing,Industrial Machinery & Supplies & Components,"Kenosha, Wisconsin",1920
+SWK,Stanley Black & Decker,manufacturing,Industrial Machinery & Supplies & Components,"New Britain, Connecticut",1843
+SMCI,Supermicro,tech,"Technology Hardware, Storage & Peripherals","San Jose, California",1993
+SNPS,Synopsys,tech,Application Software,"Sunnyvale, California",1986
+TGT,Target Corporation,retail,Consumer Staples Merchandise Retail,"Minneapolis, Minnesota",1902
+TEL,TE Connectivity,tech,Electronic Manufacturing Services,"Galway, Ireland",2007
+TDY,Teledyne Technologies,tech,Electronic Equipment & Instruments,"Thousand Oaks, California",1960
+TER,Teradyne,tech,Semiconductor Materials & Equipment,"North Reading, Massachusetts",1960
+TXN,Texas Instruments,tech,Semiconductors,"Dallas, Texas",1930
+TJX,TJX Companies,retail,Apparel Retail,"Framingham, Massachusetts",1987
+TSCO,Tractor Supply,retail,Other Specialty Retail,"Brentwood, Tennessee",1938
+TRMB,Trimble Inc.,tech,Application Software,"Westminster, Colorado",1978
+TYL,Tyler Technologies,tech,Application Software,"Plano, Texas",1966
+ULTA,Ulta Beauty,retail,Other Specialty Retail,"Bolingbrook, Illinois",1990
+VRSN,Verisign,tech,Internet Services & Infrastructure,"Reston, Virginia",1995
+GWW,W. W. Grainger,manufacturing,Industrial Machinery & Supplies & Components,"Lake Forest, Illinois",1927
+WAB,Wabtec,manufacturing,Construction Machinery & Heavy Transportation Equipment,"Pittsburgh, Pennsylvania",1999 (1869)
+WMT,Walmart,retail,Consumer Staples Merchandise Retail,"Bentonville, Arkansas",1962
+WDC,Western Digital,tech,"Technology Hardware, Storage & Peripherals","San Jose, California",1970
+XYL,Xylem Inc.,manufacturing,Industrial Machinery & Supplies & Components,"White Plains, New York",2011
+ZBRA,Zebra Technologies,tech,Electronic Equipment & Instruments,"Lincolnshire, Illinois",1969
