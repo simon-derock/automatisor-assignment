@@ -65,7 +65,7 @@ def test_tool_data_prefers_fastmcp_json_content() -> None:
 def test_company_query_without_search_match_is_flagged_as_no_data() -> None:
     assert should_flag_no_data("What does Contoso hiring look like?", []) is True
     assert should_flag_no_data("Which companies are in this sector?", []) is False
-    assert should_flag_no_data("What does Contoso hiring look like?", [{"symbol": "CTSO"}]) is False
+    assert should_flag_no_data("What does Contoso hiring look like?", [{"symbol": "CTSO"}]) is True
 
 
 def test_agent_transport_is_stdio_subprocess() -> None:

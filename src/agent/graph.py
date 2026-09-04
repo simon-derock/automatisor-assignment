@@ -57,7 +57,11 @@ def confidence_from_context(*, has_financials: bool, has_signals: bool) -> Confi
 def should_flag_no_data(query: str, matches: list[Any]) -> bool:
     """Distinguish an unmatched company request from a sector-level screen."""
     if matches:
-        return False
+        normalized = query.casefold()
+        sector_request = "which companies" in normalized or "in this sector" in normalized
+        if sector_request:
+            return False
+        return _specific_company_match(query, matches) is None
     normalized = query.casefold()
     sector_request = "which companies" in normalized or "in this sector" in normalized
     return not sector_request and any(
