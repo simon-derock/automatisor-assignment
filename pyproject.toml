@@ -10,6 +10,7 @@ dependencies = [
     "fastmcp>=2,<3",
     "langgraph>=0.2,<1",
     "mistralai>=1,<2",
+    "pandas>=2.2,<3",
     "pydantic>=2.9,<3",
     "python-dotenv>=1,<2",
     "rapidfuzz>=3,<4",

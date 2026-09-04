@@ -28,6 +28,22 @@ Mapping from GICS Sub-Industry (source: S&P 500 constituents CSV) — filter key
 
 ## 3. Database Schema
 
+### Data Sourcing
+
+The loader fetches both raw CSVs directly with `pandas.read_csv(url)`; no
+manual download, authentication, or Kaggle credentials are required:
+
+- Constituents/classification: `https://raw.githubusercontent.com/datasets/s-and-p-500-companies/main/data/constituents.csv`
+- Financials: `https://raw.githubusercontent.com/datasets/s-and-p-500-companies/main/data/constituents-financials.csv`
+
+The two frames are inner-joined on `Symbol`. The loader assigns exactly three
+application sectors: `tech` when `GICS Sector` equals `Information Technology`,
+`retail` when `GICS Sub-Industry` contains `Retail`, and `manufacturing` when
+that field contains `Machinery`, `Industrial Conglomerates`, `Auto Parts`, or
+`Electrical Equipment`. Joined rows outside those rules are excluded. Company
+and financial rows are upserted; curated signals are replaced transactionally
+on each run so the script is idempotent.
+
 ```sql
 -- companies: static identity + classification
 CREATE TABLE companies (
