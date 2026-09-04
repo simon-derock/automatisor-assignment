@@ -38,6 +38,9 @@ async def test_query_endpoint_returns_structured_agent_response(
         )
 
     assert response.status_code == 200
+    parsed = AgentResponse.model_validate(response.json())
+    assert parsed.persona == "equity_analyst"
+    assert parsed.sector == "tech"
     assert response.json()["companies_referenced"] == ["ACME"]
     assert response.json()["confidence"] == "medium"
 
