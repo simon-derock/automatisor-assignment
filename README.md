@@ -78,6 +78,25 @@ PostgreSQL directly. The agent consumes database context through MCP. Tool
 results are wrapped in `<tool_result>...</tool_result>` delimiters and treated
 as data rather than instructions.
 
+### ReAct-style reasoning policy
+
+The prompt implements a bounded ReAct loop: classify the request, choose the
+smallest sufficient tool call, inspect the observation, validate identity and
+sector, and answer. Hidden chain-of-thought is never exposed; the user receives
+the conclusion, supporting observations, uncertainty, and symbols actually
+used.
+
+| Question shape | Retrieval path | Guardrail |
+| --- | --- | --- |
+| Named company, ticker, or hiring signal | `search_company` → `get_company_detail` and/or `get_recent_signals` | Resolve one unambiguous match and verify its selected sector |
+| Sector comparison or screening | `get_companies_by_sector` → targeted detail/signal calls | Keep every record inside the requested sector |
+| Unknown company or unavailable fact | Search/inspect the relevant MCP result | State that the dataset is insufficient; never use model memory |
+
+The prompt separates observed database facts, persona-specific interpretation,
+and the decision caveat. Provider output is constrained to `AgentResponse`, and
+retrieval evidence controls identity, scope, confidence, and referenced-company
+fields.
+
 ## Data and database
 
 `data/build_db.py` downloads public S&P 500 snapshots, joins them on `Symbol`,
@@ -162,6 +181,22 @@ Confidence is computed from retrieval evidence rather than trusted to the LLM:
 If search cannot establish that a named company is in the configured dataset,
 the agent says so instead of fabricating an opinion.
 
+### Why the three personas are materially different
+
+The same retrieved rows are passed to each persona, while the prompt changes
+the decision question and evidence priority:
+
+| Persona | Decision question | Evidence emphasis | Conclusion style |
+| --- | --- | --- | --- |
+| Mutual Fund Analyst | Does this improve a diversified, long-only portfolio? | P/E, dividend yield, market cap, price/book, durable growth and peer/index context | Compounding quality, valuation discipline, portfolio fit, and downside trade-offs |
+| Equity Analyst | Are operating fundamentals improving enough to support the thesis? | EPS, EBITDA, margins where available, price/sales, 52-week trend and catalysts | Earnings trajectory, competitive position, catalysts, risks, and price-target framing |
+| PE Analyst | Can an owner create value at an executable entry price? | EBITDA, market-cap deal-size proxy, price/book asset proxy, cash-flow durability, leverage and exit considerations | Entry feasibility, operational levers, deleveraging, exit path, and value-creation risks |
+
+This is a lens change, not three datasets or three agents. The answer must
+distinguish observed metrics from interpretation and disclose when the database
+has only a proxy—for example, market cap is a deal-size proxy, not a leverage or
+cash-flow measurement.
+
 ## Setup
 
 Requirements: Python 3.11 or 3.12 and
@@ -233,6 +268,14 @@ The assignment permits any three sectors; this implementation selected
 `logistics` is intentionally rejected with HTTP 422, and `manufacturing` is the
 corresponding supported industrial-sector example.
 
+The request accepts exactly one value from each controlled enum:
+`mf_analyst`, `equity_analyst`, or `pe_analyst`; and `tech`, `retail`, or
+`manufacturing`. A successful response contains `answer`,
+`companies_referenced`, `confidence`, `persona`, `sector`, and `no_data_flag`.
+Malformed JSON, an empty query, or an unsupported value is rejected by FastAPI
+with a validation error. A valid request can still return `no_data_flag: true`
+when the company or evidence is outside the dataset.
+
 ## Demo and verification
 
 Run the scenario matrix:
@@ -245,6 +288,26 @@ It covers all nine persona × sector combinations, the identical cross-persona
 question for all three personas, MF/Retail core holdings, Equity/Manufacturing
 margin analysis, PE/Tech take-private analysis, company-specific hiring, and
 an out-of-scope company.
+
+### Reviewer smoke test
+
+After configuring a reviewer-owned Supabase database and provider key, the
+shortest end-to-end check is:
+
+1. Run the seed command and confirm `110 / 110 / 22` rows.
+2. Start the API and confirm `GET /health` returns HTTP 200.
+3. Submit the API example above through `/docs`.
+4. Ask the same Tech question as all three personas and compare evidence,
+   decision criteria, and conclusion—not just the persona label.
+5. Ask for the latest hiring/headcount signal for a known company such as
+   Apple; confirm the response references retrieved company evidence.
+6. Ask about `Contoso`; confirm `no_data_flag` is true and no facts are invented.
+7. Start Streamlit, change both sidebar selectors, and submit the same prompt;
+   confirm it reaches the same `run_agent` path as the API.
+
+The MCP boundary can be checked independently with the stdio handshake and the
+four tool names documented above. This verifies that database context crosses
+MCP rather than being obtained by a direct database import in the UI or API.
 
 Local quality gates:
 
