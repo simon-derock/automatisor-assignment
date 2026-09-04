@@ -146,8 +146,8 @@ Rationale for minimal files: reviewers are grading system design, not file count
 
 ### Phase 3 — Agent core (single persona/sector hardcoded first)
 1. [x] Red: `test_agent_contract.py` asserts `AgentResponse` schema on a canned query
-2. [ ] Implement LangGraph agent as MCP client (stdio subprocess), one persona hardcoded, structured output via Pydantic + validation-retry-once on parse failure
-   - [x] MCP client path, Pydantic response model, one validation-correction retry, and Gemini/Mistral provider wiring are implemented; LangGraph orchestration remains.
+2. [x] Implement LangGraph agent as MCP client (stdio subprocess), one persona hardcoded, structured output via Pydantic + validation-retry-once on parse failure
+   - [x] MCP client path, Pydantic response model, one validation-correction retry, Gemini/Mistral provider wiring, and compiled LangGraph orchestration are implemented.
 3. [x] Add `tenacity` retry/backoff wrapper around LLM API calls (Gemini + Mistral fallback)
 4. Commits:
    - `feat(agent): base LangGraph agent as MCP client over stdio`

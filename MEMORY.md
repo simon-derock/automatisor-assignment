@@ -46,9 +46,11 @@
   plus hiring and out-of-scope cases; it fails fast when DATABASE_URL is absent.
 - Phase 3: wired Gemini-primary/Mistral-fallback provider generation into the
   grounded loop with deterministic fallback when keys are absent.
+- Phase 3: wrapped the grounded execution in a compiled LangGraph workflow and
+  pushed it to `main`; full suite remains green at 19 tests.
 
 ### 🔄 Currently doing
-- Finish LangGraph orchestration, README polish, and end-to-end credentialed verification.
+- Finish README polish and end-to-end credentialed verification.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
