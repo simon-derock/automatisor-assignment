@@ -11,6 +11,9 @@ from pathlib import Path
 
 import asyncpg
 import pandas as pd
+from dotenv import load_dotenv
+
+load_dotenv()
 
 CONSTITUENTS_URL = (
     "https://raw.githubusercontent.com/datasets/s-and-p-500-companies/main/data/constituents.csv"

@@ -1,3 +1,5 @@
+import json
+
 import pandas as pd
 
 from data.build_db import join_and_filter, parse_founded, parse_number
@@ -48,3 +50,13 @@ def test_parsers_handle_snapshot_values_and_missing_values() -> None:
     assert parse_number("-") is None
     assert parse_founded("2013 (1888)") == 2013
     assert parse_founded(float("nan")) is None
+
+
+def test_prepared_snapshot_and_curated_signals_match_contract() -> None:
+    prepared = pd.read_csv("data/prepared/companies.csv")
+    signals = json.loads(open("data/signals_curated.json", encoding="utf-8").read())
+
+    assert set(prepared["sector"]) == {"tech", "retail", "manufacturing"}
+    assert len(prepared) == 110
+    assert len(signals) == 22
+    assert {signal["symbol"] for signal in signals} <= set(prepared["Symbol"])
