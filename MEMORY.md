@@ -9,7 +9,7 @@
 ## STATUS
 
 **Last updated:** 2026-09-04
-**Current phase:** Phase 1 — Data layer (in progress)
+**Current phase:** Phase 1 — Data layer (complete; DB seeding pending credentials)
 
 ### ✅ Completed
 - Phase 0: project metadata, dependency configuration, environment template,
@@ -17,14 +17,15 @@
 - Phase 0: uv lockfile generated and bootstrap quality checks are green.
 - Phase 1: PostgreSQL schema added; MCP contract tests and all four initial
   domain tools are green.
+- Phase 1: downloaded 503-row raw snapshots, prepared 110 filtered/joined rows,
+  added 22 curated signals, and implemented the idempotent asyncpg loader.
 
 ### 🔄 Currently doing
-- Phase 1: add the reproducible CSV loader and curated signal seed, then create
-  isolated database fixtures for the remaining contract coverage.
+- Phase 2: expand MCP failure-path coverage and add the agent core.
 
 ### 🎯 Immediate next goal
-- Add `data/build_db.py` and `data/signals_curated.json`; keep all DB access behind
-  the MCP tool layer.
+- `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
+  has not been run. No git remote is configured, so pushes are currently unavailable.
 
 ### ⚠️ Open decisions / blockers
 - The provided `.git` directory is empty, so git commits cannot currently be created
