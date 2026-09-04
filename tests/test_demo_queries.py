@@ -17,6 +17,13 @@ def test_demo_cases_cover_spec_categories_and_repeat_cross_persona_question() ->
         "out_of_scope",
     } <= cases.keys()
 
+    assert len(demo_queries.MATRIX_CASES) == 9
+    assert {(case.persona, case.sector) for case in demo_queries.MATRIX_CASES} == {
+        (persona, sector)
+        for persona in PERSONAS
+        for sector in ("retail", "tech", "manufacturing")
+    }
+
     cross_persona = [
         case
         for case in demo_queries.DEMO_CASES
@@ -36,6 +43,10 @@ def test_demo_cases_cover_spec_categories_and_repeat_cross_persona_question() ->
     ) == ("equity_analyst", "manufacturing")
     assert (cases["pe_tech_take_private"].persona, cases["pe_tech_take_private"].sector) == (
         "pe_analyst",
+        "tech",
+    )
+    assert (cases["hiring_headcount"].persona, cases["hiring_headcount"].sector) == (
+        "equity_analyst",
         "tech",
     )
 

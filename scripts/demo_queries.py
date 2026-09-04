@@ -1,4 +1,4 @@
-"""Run the assignment's named persona, grounding, and scope demo queries."""
+"""Run the assignment's persona/sector matrix and named grading scenarios."""
 
 from __future__ import annotations
 
@@ -27,41 +27,35 @@ CROSS_PERSONA_QUERY = (
     "Which companies in this sector look most attractive based on the data you have?"
 )
 
-DEMO_CASES: tuple[DemoCase, ...] = (
-    DemoCase("cross_persona_same_question_mf", CROSS_PERSONA_QUERY, "mf_analyst", "retail"),
-    DemoCase(
-        "cross_persona_same_question_equity",
-        CROSS_PERSONA_QUERY,
-        "equity_analyst",
-        "retail",
-    ),
-    DemoCase("cross_persona_same_question_pe", CROSS_PERSONA_QUERY, "pe_analyst", "retail"),
+MATRIX_CASES: tuple[DemoCase, ...] = (
     DemoCase(
         "mf_retail_core_holding",
-        (
-            "Which retail companies look suitable as core long-only holdings based on "
-            "valuation, dividend yield, and portfolio fit?"
-        ),
+        "Which retail companies look suitable as core long-only holdings based on valuation, "
+        "dividend yield, and portfolio fit?",
         "mf_analyst",
         "retail",
     ),
     DemoCase(
-        "equity_manufacturing_margin_walk",
-        (
-            "Walk me through the earnings and margin trajectory of the leading "
-            "manufacturing companies using EPS and EBITDA data."
-        ),
-        "equity_analyst",
+        "mf_tech_screen", "Screen this sector for long-term opportunities.", "mf_analyst", "tech"
+    ),
+    DemoCase(
+        "mf_manufacturing_screen",
+        "Screen this sector for long-term opportunities.",
+        "mf_analyst",
         "manufacturing",
     ),
     DemoCase(
-        "pe_tech_take_private",
-        (
-            "Which technology companies could support a take-private thesis based on "
-            "EBITDA, deal size, leverage capacity, operating levers, and exit potential?"
-        ),
-        "pe_analyst",
-        "tech",
+        "equity_retail_earnings_review",
+        "Which retail companies have the strongest earnings setup?",
+        "equity_analyst",
+        "retail",
+    ),
+    DemoCase(
+        "equity_manufacturing_margin_walk",
+        "Walk me through the earnings and margin trajectory of the leading manufacturing "
+        "companies using EPS and EBITDA data.",
+        "equity_analyst",
+        "manufacturing",
     ),
     DemoCase(
         "hiring_headcount",
@@ -69,6 +63,40 @@ DEMO_CASES: tuple[DemoCase, ...] = (
         "equity_analyst",
         "tech",
     ),
+    DemoCase(
+        "pe_retail_value_creation",
+        "Which retail companies offer the clearest value-creation opportunities?",
+        "pe_analyst",
+        "retail",
+    ),
+    DemoCase(
+        "pe_manufacturing_value_creation",
+        "Which manufacturing companies offer the clearest value-creation opportunities?",
+        "pe_analyst",
+        "manufacturing",
+    ),
+    DemoCase(
+        "pe_tech_take_private",
+        "Which technology companies could support a take-private thesis based on EBITDA, deal "
+        "size, leverage capacity, operating levers, and exit potential?",
+        "pe_analyst",
+        "tech",
+    ),
+)
+
+CROSS_PERSONA_CASES: tuple[DemoCase, ...] = tuple(
+    DemoCase(
+        f"cross_persona_same_question_{persona.removesuffix('_analyst')}",
+        CROSS_PERSONA_QUERY,
+        persona,
+        "retail",
+    )
+    for persona in ("mf_analyst", "equity_analyst", "pe_analyst")
+)
+
+DEMO_CASES: tuple[DemoCase, ...] = (
+    *MATRIX_CASES,
+    *CROSS_PERSONA_CASES,
     DemoCase(
         "out_of_scope",
         "What does Contoso's recent hiring activity look like?",
