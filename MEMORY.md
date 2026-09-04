@@ -9,7 +9,7 @@
 ## STATUS
 
 **Last updated:** 2026-09-04
-**Current phase:** Phase 1 — Data layer (complete; DB seeding pending credentials)
+**Current phase:** Phase 2 — MCP server (complete; agent core next)
 
 ### ✅ Completed
 - Phase 0: project metadata, dependency configuration, environment template,
@@ -26,17 +26,19 @@
 - Phase 1: corrected a curated Microsoft signal URL and revalidated all tests.
 - Phase 1/2: updated PLAN.md completion markers and added MCP database-failure
   contract coverage; full suite is green at 9 tests.
+- Phase 1: added an optional disposable `TEST_DATABASE_URL` schema fixture with
+  isolated tables and teardown; local suite remains green without credentials.
 
 ### 🔄 Currently doing
-- Phase 2: expand MCP failure-path coverage and add the agent core.
+- Phase 3: begin the agent core with the response schema contract test.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
   has not been run. A push was attempted, but no git remote is configured.
 
 ### ⚠️ Open decisions / blockers
-- The provided `.git` directory is empty, so git commits cannot currently be created
-  in this workspace; source changes and `uv.lock` are present for handoff.
+- The provided `.git` directory is a read-only mount; commits are kept in the
+  task-local `/tmp/automatisor-assignment.git` metadata repository.
 
 ---
 
@@ -47,7 +49,7 @@
 - Data source: raw CSVs from `github.com/datasets/s-and-p-500-companies` (constituents.csv +
   constituents-financials.csv), no Kaggle auth needed
 - Signals table is hand-curated (~20-30 rows), lives in `data/signals_curated.json`
-- MCP tools are domain-specific wrappers over `supabase-py`, NOT raw SQL passthrough — this is a
+- MCP tools are domain-specific wrappers over asyncpg, NOT raw SQL passthrough — this is a
   hard requirement from the assignment, do not regress to a generic query tool
 - Agent entrypoint `run_agent(query, persona, sector)` is the ONLY thing both API and UI call —
   never duplicate agent logic in either surface

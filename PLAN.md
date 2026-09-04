@@ -125,7 +125,7 @@ Rationale for minimal files: reviewers are grading system design, not file count
 1. [x] Write `tests/test_mcp_tools.py` stubs asserting shape of `get_companies_by_sector("tech")` **before** implementing (red)
 2. [x] `data/build_db.py`: pull the two GitHub CSVs (constituents + constituents-financials), filter to 3 sectors via GICS sub-industry keywords, load into Supabase via `asyncpg`
 3. [x] Add `data/signals_curated.json` — 20-30 hand-sourced hiring/news signal rows
-4. [ ] `tests/conftest.py`: dedicated test-schema fixture, separate from demo tables
+4. [x] `tests/conftest.py`: dedicated test-schema fixture, separate from demo tables
 5. Commit sequence (micro):
    - `feat(db): schema.sql for companies/financials/signals tables`
    - `feat(data): build_db.py fetches and filters S&P500 CSVs by sector`
