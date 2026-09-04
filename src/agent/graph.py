@@ -5,9 +5,10 @@ from __future__ import annotations
 import json
 import logging
 from collections.abc import Mapping
-from typing import Any, Literal
+from typing import Any, Literal, TypedDict, cast
 
 from fastmcp import Client
+from langgraph.graph import END, START, StateGraph
 
 from src.agent.personas import build_system_prompt
 from src.agent.providers import generate_from_environment, generate_validated_response
@@ -16,6 +17,13 @@ from src.mcp_server.server import mcp
 
 logger = logging.getLogger(__name__)
 Confidence = Literal["high", "medium", "low"]
+
+
+class AgentState(TypedDict, total=False):
+    query: str
+    persona: str
+    sector: str
+    response: AgentResponse
 
 
 def delimited_tool_context(result: Mapping[str, Any] | list[Any]) -> str:
@@ -43,7 +51,7 @@ def _tool_data(result: Any) -> Any:
     return None
 
 
-async def run_agent(query: str, persona: str, sector: str) -> AgentResponse:
+async def _run_grounded_agent(query: str, persona: str, sector: str) -> AgentResponse:
     """Run a grounded query through the co-located MCP server.
 
     Every company named here is first retrieved through MCP. If provider keys
@@ -141,3 +149,23 @@ async def run_agent(query: str, persona: str, sector: str) -> AgentResponse:
         persona=persona,
         sector=sector,
     )
+
+
+async def _grounded_agent_node(state: AgentState) -> AgentState:
+    response = await _run_grounded_agent(state["query"], state["persona"], state["sector"])
+    return {"response": response}
+
+
+_workflow = StateGraph(AgentState)
+_workflow.add_node("grounded_agent", _grounded_agent_node)
+_workflow.add_edge(START, "grounded_agent")
+_workflow.add_edge("grounded_agent", END)
+agent_graph = _workflow.compile()
+
+
+async def run_agent(query: str, persona: str, sector: str) -> AgentResponse:
+    """Run the shared agent entrypoint through the compiled LangGraph workflow."""
+    result = await agent_graph.ainvoke(
+        {"query": query, "persona": persona, "sector": sector}
+    )
+    return cast(AgentResponse, result["response"])
