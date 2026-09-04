@@ -166,8 +166,8 @@ Rationale for minimal files: reviewers are grading system design, not file count
    - `test(agent): cross-persona divergence smoke test (same query, 3 personas, assert differing tool-priority fields)`
 
 ### Phase 5 — Grounding + honesty guardrails
-1. Add explicit "no data found → say so" instruction + verify via test with an out-of-scope company name
-2. Note on tool-result handling: wrap tool output in a clearly delimited context block in the prompt (light prompt-injection hygiene, low risk here but documented)
+1. [x] Add explicit "no data found → say so" instruction + verify via test with an out-of-scope company name
+2. [x] Note on tool-result handling: wrap tool output in a clearly delimited context block in the prompt (light prompt-injection hygiene, low risk here but documented)
 3. Commits:
    - `feat(agent): honest no-data handling for out-of-scope companies`
    - `feat(agent): delimited tool-context blocks in prompt construction`

@@ -44,6 +44,8 @@
   `run_agent()` entrypoint; full suite and strict checks remain green.
 - Phase 8: added and pushed the demo runner for all 9 persona/sector combinations
   plus hiring and out-of-scope cases; it fails fast when DATABASE_URL is absent.
+- Phase 5: added search-first out-of-scope detection with explicit low-confidence
+  no-data responses; delimited tool context is enforced and 20 tests pass.
 - Phase 3: wired Gemini-primary/Mistral-fallback provider generation into the
   grounded loop with deterministic fallback when keys are absent.
 - Phase 3: wrapped the grounded execution in a compiled LangGraph workflow and
