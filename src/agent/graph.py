@@ -58,12 +58,20 @@ def should_flag_no_data(query: str, matches: list[Any]) -> bool:
     """Distinguish an unmatched company request from a sector-level screen."""
     if matches:
         normalized = query.casefold()
-        sector_request = "which companies" in normalized or "in this sector" in normalized
+        sector_request = (
+            "which companies" in normalized
+            or "in this sector" in normalized
+            or "companies in your data" in normalized
+        )
         if sector_request:
             return False
         return _specific_company_match(query, matches) is None
     normalized = query.casefold()
-    sector_request = "which companies" in normalized or "in this sector" in normalized
+    sector_request = (
+        "which companies" in normalized
+        or "in this sector" in normalized
+        or "companies in your data" in normalized
+    )
     return not sector_request and any(
         phrase in normalized for phrase in ("hiring", "headcount", "company", "contoso")
     )
