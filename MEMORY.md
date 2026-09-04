@@ -34,9 +34,11 @@
   reasoning hints for all three analyst personas; 12 tests pass.
 - Phase 3: added and pushed an MCP-protocol-backed grounded query loop with
   delimited tool context and explicit confidence calculation; 13 tests pass.
+- Phase 3: added and pushed tenacity-backed primary retry and fallback provider
+  adapter; simulated rate-limit tests pass and the suite has 15 tests.
 
 ### 🔄 Currently doing
-- Add LangGraph/provider adapters, retry/fallback handling, and structured-output correction.
+- Add structured-output correction and then wire the provider adapter into the agent loop.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding
