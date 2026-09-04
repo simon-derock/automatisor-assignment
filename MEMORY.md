@@ -24,6 +24,8 @@
 - Phase 1: loader now reads `.env`; regression tests verify 110 prepared rows,
   all three sectors, 22 signals, and valid signal symbols.
 - Phase 1: corrected a curated Microsoft signal URL and revalidated all tests.
+- Phase 1/2: updated PLAN.md completion markers and added MCP database-failure
+  contract coverage; full suite is green at 9 tests.
 
 ### 🔄 Currently doing
 - Phase 2: expand MCP failure-path coverage and add the agent core.
