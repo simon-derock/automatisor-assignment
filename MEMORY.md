@@ -42,9 +42,11 @@
   validation, shared-agent delegation, and CORS; full suite has 19 tests.
 - Phase 7: added and pushed Streamlit persona/sector chat UI calling the same
   `run_agent()` entrypoint; full suite and strict checks remain green.
+- Phase 8: added and pushed the demo runner for all 9 persona/sector combinations
+  plus hiring and out-of-scope cases; it fails fast when DATABASE_URL is absent.
 
 ### 🔄 Currently doing
-- Wire the provider adapter into the agent loop, then add demo-script coverage and polish.
+- Wire the provider adapter into the agent loop, then finish README polish and end-to-end credentialed verification.
 
 ### 🎯 Immediate next goal
 - `DATABASE_URL` is not configured in this workspace, so remote Supabase seeding

@@ -188,7 +188,7 @@ Rationale for minimal files: reviewers are grading system design, not file count
    - `feat(ui): chat display of AgentResponse`
 
 ### Phase 8 — Demo script + polish + submission
-- `scripts/demo_queries.py`: runnable script that fires all 4 grading-test categories + a spread across the 9 combos, printing results — this is what stands in for the video
+- [x] `scripts/demo_queries.py`: runnable script that fires all 4 grading-test categories + a spread across the 9 combos, printing results — this is what stands in for the video
 - README: setup instructions, schema decisions, MCP design rationale, "what I'd improve," data-quality caveats, note offering a **live walkthrough in place of a video**
 - Final CI green run
 - Commits:
